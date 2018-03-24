@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -35,7 +36,84 @@ class InPlayPage extends StatelessWidget {
           child: new Text(title),
         ),
       ),
-      body: new CustomTimer(
+      body: new ListView(
+        children: <Widget>[
+          new TimerItem(),
+          new RestItem(),
+          new RepsItem(),
+          new SetsItem(),
+        ],
+      ),
+    );
+  }
+}
+
+class ListItem extends StatelessWidget {
+  ListItem({
+    Key key,
+    @required this.mainItem,
+    @required this.title,
+    this.subTitle : '',
+  })
+      : super(key: key);
+
+  final Widget mainItem;
+  final String title;
+  final String subTitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return new Row(
+      children: <Widget>[
+        new Column(
+          children: <Widget>[
+            new Text(
+              title,
+              style: new TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            new Text(
+              subTitle,
+              style: new TextStyle(
+                color: Colors.grey,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+        ),
+        new Expanded(
+          child: mainItem,
+        )
+      ],
+    );
+  }
+}
+
+String toTwoDigits(int num) {
+  if (num < 10) {
+    return '0$num';
+  }
+
+  return num.toString();
+}
+
+String formatTime(int curTimeInSecs) {
+  final int _mins = curTimeInSecs ~/ 60;
+  final int _secs = curTimeInSecs - (_mins * 60);
+  final String mins = toTwoDigits(_mins);
+  final String secs = toTwoDigits(_secs);
+
+  return '$mins:$secs';
+}
+
+class TimerItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new ListItem(
+      title: 'Work',
+      subTitle: 'Swing',
+      mainItem: new CustomTimer(
         initValue: 10,
         fontSize: 100.0,
       ),
@@ -43,8 +121,58 @@ class InPlayPage extends StatelessWidget {
   }
 }
 
+class RestItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new ListItem(
+      mainItem: new Text(
+        formatTime(7),
+        style: new TextStyle(
+          color: Colors.blue,
+        ),
+      ),
+      title: 'Rest',
+    );
+  }
+}
+
+class RepsItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new ListItem(
+      mainItem: new Text(
+        '0 / 1',
+        style: new TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      title: 'Reps',
+      subTitle: 'Interval',
+    );
+  }
+}
+
+class SetsItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new ListItem(
+      mainItem: new Text(
+        '1 / 200',
+        style: new TextStyle(
+          color: Colors.orange,
+        ),
+      ),
+      title: 'Sets',
+    );
+  }
+}
+
 class CustomTimer extends StatefulWidget {
-  CustomTimer({Key key, this.initValue: 0, this.fontSize: 14.0})
+  CustomTimer({
+    Key key,
+    this.initValue: 0,
+    this.fontSize: 14.0,
+  })
       : super(key: key);
 
   final int initValue;
@@ -77,25 +205,10 @@ class _CustomTimerState extends State<CustomTimer> {
     });
   }
 
-  String _toTwoDigits(int num) {
-    if (num < 10) {
-      return '0$num';
-    }
-
-    return num.toString();
-  }
-
-  String _formatTime(int curTimeInSecs) {
-    final int _mins = curTimeInSecs ~/ 60;
-    final int _secs = curTimeInSecs - (_mins * 60);
-    final String mins = _toTwoDigits(_mins);
-    final String secs = _toTwoDigits(_secs);
-
-    return '$mins:$secs';
-  }
-
   @override
   initState() {
+    super.initState();
+
     _curTimeInSecs = widget.initValue;
   }
 
@@ -111,7 +224,7 @@ class _CustomTimerState extends State<CustomTimer> {
   @override
   Widget build(BuildContext context) {
     return new GestureDetector(
-      child: new Text(_formatTime(_curTimeInSecs),
+      child: new Text(formatTime(_curTimeInSecs),
           style: new TextStyle(
             fontSize: widget.fontSize,
             color: Colors.lightGreen,
