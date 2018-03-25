@@ -342,6 +342,12 @@ class _SettingsPageState extends State<SettingsPage> {
   double wb = 3.0;
   bool wwb = false;
 
+  final TextStyle labelStyle = new TextStyle(
+    fontSize: 20.0,
+  );
+  final double sliderCountSize = 25.0;
+  final double arrowSize = 50.0;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -351,9 +357,15 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       body: new ListView(
+        padding: const EdgeInsets.symmetric(
+          vertical: 8.0,
+        ),
         children: <Widget>[
           new ListTile(
-            title: new Text('Flash Screen Each Rep'),
+            title: new Text(
+              'Flash Screen Each Rep',
+              style: labelStyle,
+            ),
             trailing: new Switch(
               value: fser,
               onChanged: (bool newValue) {
@@ -364,7 +376,10 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           new ListTile(
-            title: new Text('Vibrate Each Rep'),
+            title: new Text(
+              'Vibrate Each Rep',
+              style: labelStyle,
+            ),
             trailing: new Switch(
               value: ver,
               onChanged: (bool newValue) {
@@ -375,7 +390,10 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           new ListTile(
-            title: new Text('Preview Next Activity'),
+            title: new Text(
+              'Preview Next Activity',
+              style: labelStyle,
+            ),
             trailing: new Switch(
               value: pna,
               onChanged: (bool newValue) {
@@ -386,7 +404,10 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           new ListTile(
-            title: new Text('Final Rep Sync'),
+            title: new Text(
+              'Final Rep Sync',
+              style: labelStyle,
+            ),
             trailing: new Switch(
               value: frs,
               onChanged: (bool newValue) {
@@ -397,7 +418,16 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           new ListTile(
-            title: new Text('No Prep Seconds'),
+            title: new Text(
+              'Prep Seconds',
+              style: labelStyle,
+            ),
+            subtitle: new Text(
+              nps.toInt().toString(),
+              style: new TextStyle(
+                fontSize: sliderCountSize,
+              ),
+            ),
             trailing: new Slider(
               value: nps,
               min: 0.0,
@@ -410,7 +440,16 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           new ListTile(
-            title: new Text('Warning Beeps'),
+            title: new Text(
+              'Warning Beeps',
+              style: labelStyle,
+            ),
+            subtitle: new Text(
+              wb.toInt().toString(),
+              style: new TextStyle(
+                fontSize: sliderCountSize,
+              ),
+            ),
             trailing: new Slider(
               value: wb,
               min: 0.0,
@@ -423,7 +462,10 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           new ListTile(
-            title: new Text('Work Warning Beeps'),
+            title: new Text(
+              'Work Warning Beeps',
+              style: labelStyle,
+            ),
             trailing: new Switch(
               value: wwb,
               onChanged: (bool newValue) {
@@ -434,12 +476,24 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           new ListTile(
-            title: new Text('Sound Chooser'),
-            trailing: new Icon(Icons.arrow_right),
+            title: new Text(
+              'Sound Chooser',
+              style: labelStyle,
+            ),
+            trailing: new Icon(
+              Icons.arrow_right,
+              size: arrowSize,
+            ),
           ),
           new ListTile(
-            title: new Text('Spoken Alerts'),
-            trailing: new Icon(Icons.arrow_right),
+            title: new Text(
+              'Spoken Alerts',
+              style: labelStyle,
+            ),
+            trailing: new Icon(
+              Icons.arrow_right,
+              size: arrowSize,
+            ),
           ),
         ],
       ),
