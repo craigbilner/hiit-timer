@@ -78,36 +78,41 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Row(
-      children: <Widget>[
-        new Container(
-          width: 150.0,
-          padding: const EdgeInsets.all(32.0),
-          child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              new Text(
-                title,
-                style: new TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
+    return new Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 8.0,
+      ),
+      child: new Row(
+        children: <Widget>[
+          new Container(
+            width: 150.0,
+            padding: const EdgeInsets.all(32.0),
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                new Text(
+                  title,
+                  style: new TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                  ),
                 ),
-              ),
-              new Text(
-                subTitle,
-                style: new TextStyle(
-                  color: Colors.grey,
-                  fontSize: 20.0,
-                  fontStyle: FontStyle.italic,
+                new Text(
+                  subTitle,
+                  style: new TextStyle(
+                    color: Colors.grey,
+                    fontSize: 20.0,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        new Expanded(
-          child: mainItem,
-        )
-      ],
+          new Expanded(
+            child: mainItem,
+          )
+        ],
+      ),
     );
   }
 }
