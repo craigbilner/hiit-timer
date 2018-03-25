@@ -28,6 +28,7 @@ class InPlayPage extends StatelessWidget {
 
   final String title;
   final double fontSize = 75.0;
+  final FontWeight fontWeight = FontWeight.w100;
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +43,19 @@ class InPlayPage extends StatelessWidget {
           new TimerItem(
             initValue: 10,
             fontSize: fontSize,
+            fontWeight: fontWeight,
           ),
           new RestItem(
             fontSize: fontSize,
+            fontWeight: fontWeight,
           ),
           new RepsItem(
             fontSize: fontSize,
+            fontWeight: fontWeight,
           ),
           new SetsItem(
             fontSize: fontSize,
+            fontWeight: fontWeight,
           ),
         ],
       ),
@@ -129,10 +134,12 @@ class TimerItem extends StatelessWidget {
     Key key,
     this.initValue: 0,
     this.fontSize: 20.0,
+    this.fontWeight: FontWeight.normal,
   });
 
   final int initValue;
   final double fontSize;
+  final FontWeight fontWeight;
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +149,7 @@ class TimerItem extends StatelessWidget {
       mainItem: new CustomTimer(
         initValue: initValue,
         fontSize: fontSize,
+        fontWeight: fontWeight,
       ),
     );
   }
@@ -151,9 +159,11 @@ class RestItem extends StatelessWidget {
   RestItem({
     Key key,
     this.fontSize: 20.0,
+    this.fontWeight: FontWeight.normal,
   });
 
   final double fontSize;
+  final FontWeight fontWeight;
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +173,7 @@ class RestItem extends StatelessWidget {
         style: new TextStyle(
           color: Colors.blue,
           fontSize: fontSize,
+          fontWeight: fontWeight,
         ),
       ),
       title: 'Rest',
@@ -174,9 +185,11 @@ class RepsItem extends StatelessWidget {
   RepsItem({
     Key key,
     this.fontSize: 20.0,
+    this.fontWeight: FontWeight.normal,
   });
 
   final double fontSize;
+  final FontWeight fontWeight;
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +199,7 @@ class RepsItem extends StatelessWidget {
         style: new TextStyle(
           color: Colors.white,
           fontSize: fontSize,
+          fontWeight: fontWeight,
         ),
       ),
       title: 'Reps',
@@ -198,9 +212,11 @@ class SetsItem extends StatelessWidget {
   SetsItem({
     Key key,
     this.fontSize: 20.0,
+    this.fontWeight: FontWeight.normal,
   });
 
   final double fontSize;
+  final FontWeight fontWeight;
 
   @override
   Widget build(BuildContext context) {
@@ -210,6 +226,7 @@ class SetsItem extends StatelessWidget {
         style: new TextStyle(
           color: Colors.orange,
           fontSize: fontSize,
+          fontWeight: fontWeight,
         ),
       ),
       title: 'Sets',
@@ -222,11 +239,15 @@ class CustomTimer extends StatefulWidget {
     Key key,
     this.initValue: 0,
     this.fontSize: 14.0,
+    this.colour: Colors.green,
+    this.fontWeight,
   })
       : super(key: key);
 
   final int initValue;
   final double fontSize;
+  final Color colour;
+  final FontWeight fontWeight;
 
   @override
   _CustomTimerState createState() => new _CustomTimerState();
@@ -277,8 +298,8 @@ class _CustomTimerState extends State<CustomTimer> {
       child: new Text(formatTime(_curTimeInSecs),
           style: new TextStyle(
             fontSize: widget.fontSize,
-            color: Colors.lightGreen,
-            fontWeight: FontWeight.w100,
+            color: widget.colour,
+            fontWeight: widget.fontWeight,
           )),
       onTap: () {
         if (countDown != null && countDown.isActive) {
