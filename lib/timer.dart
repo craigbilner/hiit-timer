@@ -7,14 +7,14 @@ typedef TimerCallback(Timer t);
 class CustomTimer extends StatefulWidget {
   CustomTimer({
     Key key,
-    this.initValue: 0,
+    this.initValue,
     this.fontSize: 14.0,
     this.colour: Colors.green,
     this.fontWeight,
   })
       : super(key: key);
 
-  final int initValue;
+  final Duration initValue;
   final double fontSize;
   final Color colour;
   final FontWeight fontWeight;
@@ -39,7 +39,7 @@ class _CustomTimerState extends State<CustomTimer> {
 
       if (_curTimeInSecs == -1) {
         countDown.cancel();
-        _curTimeInSecs = widget.initValue;
+        _curTimeInSecs = widget.initValue.inSeconds;
       }
     });
   }
@@ -48,7 +48,9 @@ class _CustomTimerState extends State<CustomTimer> {
   initState() {
     super.initState();
 
-    _curTimeInSecs = widget.initValue;
+    if (widget.initValue != null) {
+      _curTimeInSecs = widget.initValue.inSeconds;
+    }
   }
 
   @override
@@ -63,7 +65,12 @@ class _CustomTimerState extends State<CustomTimer> {
   @override
   Widget build(BuildContext context) {
     return new GestureDetector(
-      child: new Text(formatTime(_curTimeInSecs),
+      child: new Text(
+          formatTime(
+            new Duration(
+              seconds: _curTimeInSecs,
+            ),
+          ),
           style: new TextStyle(
             fontSize: widget.fontSize,
             color: widget.colour,

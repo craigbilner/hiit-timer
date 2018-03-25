@@ -6,9 +6,9 @@ String toTwoDigits(int num) {
   return num.toString();
 }
 
-String formatTime(int curTimeInSecs) {
-  final int _mins = curTimeInSecs ~/ 60;
-  final int _secs = curTimeInSecs - (_mins * 60);
+String formatTime(Duration duration) {
+  final int _mins = duration.inSeconds ~/ 60;
+  final int _secs = duration.inSeconds - (_mins * 60);
   final String mins = toTwoDigits(_mins);
   final String secs = toTwoDigits(_secs);
 

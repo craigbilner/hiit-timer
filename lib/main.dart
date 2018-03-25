@@ -14,6 +14,9 @@ class TimerApp extends StatelessWidget {
       ),
       home: new InPlayPage(
         title: '15s/15s VO2 Max',
+        activity: 'Swing',
+        workDuration: new Duration(seconds: 10),
+        restDuration: new Duration(seconds: 7),
       ),
       routes: <String, WidgetBuilder>{
         '/settings': (BuildContext context) => new SettingsPage(),
