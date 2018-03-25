@@ -15,6 +15,9 @@ class TimerApp extends StatelessWidget {
       home: new InPlayPage(
         title: '15s/15s VO2 Max',
       ),
+      routes: <String, WidgetBuilder>{
+        '/settings': (BuildContext context) => new SettingsPage(),
+      },
     );
   }
 }
@@ -37,6 +40,14 @@ class InPlayPage extends StatelessWidget {
         title: new Center(
           child: new Text(title),
         ),
+        actions: <Widget>[
+          new IconButton(
+            icon: new Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/settings');
+            },
+          )
+        ],
       ),
       body: new ListView(
         children: <Widget>[
@@ -313,6 +324,125 @@ class _CustomTimerState extends State<CustomTimer> {
           _createCountdown(_decrementTime);
         }
       },
+    );
+  }
+}
+
+class SettingsPage extends StatefulWidget {
+  @override
+  _SettingsPageState createState() => new _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  bool fser = false;
+  bool ver = false;
+  bool pna = false;
+  bool frs = false;
+  double nps = 0.0;
+  double wb = 3.0;
+  bool wwb = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Center(
+          child: new Text('Settings'),
+        ),
+      ),
+      body: new ListView(
+        children: <Widget>[
+          new ListTile(
+            title: new Text('Flash Screen Each Rep'),
+            trailing: new Switch(
+              value: fser,
+              onChanged: (bool newValue) {
+                setState(() {
+                  fser = newValue;
+                });
+              },
+            ),
+          ),
+          new ListTile(
+            title: new Text('Vibrate Each Rep'),
+            trailing: new Switch(
+              value: ver,
+              onChanged: (bool newValue) {
+                setState(() {
+                  ver = newValue;
+                });
+              },
+            ),
+          ),
+          new ListTile(
+            title: new Text('Preview Next Activity'),
+            trailing: new Switch(
+              value: pna,
+              onChanged: (bool newValue) {
+                setState(() {
+                  pna = newValue;
+                });
+              },
+            ),
+          ),
+          new ListTile(
+            title: new Text('Final Rep Sync'),
+            trailing: new Switch(
+              value: frs,
+              onChanged: (bool newValue) {
+                setState(() {
+                  frs = newValue;
+                });
+              },
+            ),
+          ),
+          new ListTile(
+            title: new Text('No Prep Seconds'),
+            trailing: new Slider(
+              value: nps,
+              min: 0.0,
+              max: 10.0,
+              onChanged: (double newValue) {
+                setState(() {
+                  nps = newValue;
+                });
+              },
+            ),
+          ),
+          new ListTile(
+            title: new Text('Warning Beeps'),
+            trailing: new Slider(
+              value: wb,
+              min: 0.0,
+              max: 10.0,
+              onChanged: (double newValue) {
+                setState(() {
+                  wb = newValue;
+                });
+              },
+            ),
+          ),
+          new ListTile(
+            title: new Text('Work Warning Beeps'),
+            trailing: new Switch(
+              value: wwb,
+              onChanged: (bool newValue) {
+                setState(() {
+                  wwb = newValue;
+                });
+              },
+            ),
+          ),
+          new ListTile(
+            title: new Text('Sound Chooser'),
+            trailing: new Icon(Icons.arrow_right),
+          ),
+          new ListTile(
+            title: new Text('Spoken Alerts'),
+            trailing: new Icon(Icons.arrow_right),
+          ),
+        ],
+      ),
     );
   }
 }
