@@ -27,6 +27,7 @@ class InPlayPage extends StatelessWidget {
       : super(key: key);
 
   final String title;
+  final double fontSize = 75.0;
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +39,19 @@ class InPlayPage extends StatelessWidget {
       ),
       body: new ListView(
         children: <Widget>[
-          new TimerItem(),
-          new RestItem(),
-          new RepsItem(),
-          new SetsItem(),
+          new TimerItem(
+            initValue: 10,
+            fontSize: fontSize,
+          ),
+          new RestItem(
+            fontSize: fontSize,
+          ),
+          new RepsItem(
+            fontSize: fontSize,
+          ),
+          new SetsItem(
+            fontSize: fontSize,
+          ),
         ],
       ),
     );
@@ -53,7 +63,7 @@ class ListItem extends StatelessWidget {
     Key key,
     @required this.mainItem,
     @required this.title,
-    this.subTitle : '',
+    this.subTitle: '',
   })
       : super(key: key);
 
@@ -65,22 +75,29 @@ class ListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Row(
       children: <Widget>[
-        new Column(
-          children: <Widget>[
-            new Text(
-              title,
-              style: new TextStyle(
-                color: Colors.white,
+        new Container(
+          width: 150.0,
+          padding: const EdgeInsets.all(32.0),
+          child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new Text(
+                title,
+                style: new TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                ),
               ),
-            ),
-            new Text(
-              subTitle,
-              style: new TextStyle(
-                color: Colors.grey,
-                fontStyle: FontStyle.italic,
+              new Text(
+                subTitle,
+                style: new TextStyle(
+                  color: Colors.grey,
+                  fontSize: 20.0,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         new Expanded(
           child: mainItem,
@@ -108,20 +125,36 @@ String formatTime(int curTimeInSecs) {
 }
 
 class TimerItem extends StatelessWidget {
+  TimerItem({
+    Key key,
+    this.initValue: 0,
+    this.fontSize: 20.0,
+  });
+
+  final int initValue;
+  final double fontSize;
+
   @override
   Widget build(BuildContext context) {
     return new ListItem(
       title: 'Work',
       subTitle: 'Swing',
       mainItem: new CustomTimer(
-        initValue: 10,
-        fontSize: 100.0,
+        initValue: initValue,
+        fontSize: fontSize,
       ),
     );
   }
 }
 
 class RestItem extends StatelessWidget {
+  RestItem({
+    Key key,
+    this.fontSize: 20.0,
+  });
+
+  final double fontSize;
+
   @override
   Widget build(BuildContext context) {
     return new ListItem(
@@ -129,6 +162,7 @@ class RestItem extends StatelessWidget {
         formatTime(7),
         style: new TextStyle(
           color: Colors.blue,
+          fontSize: fontSize,
         ),
       ),
       title: 'Rest',
@@ -137,6 +171,13 @@ class RestItem extends StatelessWidget {
 }
 
 class RepsItem extends StatelessWidget {
+  RepsItem({
+    Key key,
+    this.fontSize: 20.0,
+  });
+
+  final double fontSize;
+
   @override
   Widget build(BuildContext context) {
     return new ListItem(
@@ -144,6 +185,7 @@ class RepsItem extends StatelessWidget {
         '0 / 1',
         style: new TextStyle(
           color: Colors.white,
+          fontSize: fontSize,
         ),
       ),
       title: 'Reps',
@@ -153,6 +195,13 @@ class RepsItem extends StatelessWidget {
 }
 
 class SetsItem extends StatelessWidget {
+  SetsItem({
+    Key key,
+    this.fontSize: 20.0,
+  });
+
+  final double fontSize;
+
   @override
   Widget build(BuildContext context) {
     return new ListItem(
@@ -160,6 +209,7 @@ class SetsItem extends StatelessWidget {
         '1 / 200',
         style: new TextStyle(
           color: Colors.orange,
+          fontSize: fontSize,
         ),
       ),
       title: 'Sets',
