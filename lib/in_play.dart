@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'timer.dart';
+import 'helpers.dart';
 
 class InPlayPage extends StatelessWidget {
   InPlayPage({
@@ -108,23 +109,6 @@ class ListItem extends StatelessWidget {
   }
 }
 
-String toTwoDigits(int num) {
-  if (num < 10) {
-    return '0$num';
-  }
-
-  return num.toString();
-}
-
-String formatTime(int curTimeInSecs) {
-  final int _mins = curTimeInSecs ~/ 60;
-  final int _secs = curTimeInSecs - (_mins * 60);
-  final String mins = toTwoDigits(_mins);
-  final String secs = toTwoDigits(_secs);
-
-  return '$mins:$secs';
-}
-
 class TimerItem extends StatelessWidget {
   TimerItem({
     Key key,
@@ -226,84 +210,6 @@ class SetsItem extends StatelessWidget {
         ),
       ),
       title: 'Sets',
-    );
-  }
-}
-
-class CustomTimer extends StatefulWidget {
-  CustomTimer({
-    Key key,
-    this.initValue: 0,
-    this.fontSize: 14.0,
-    this.colour: Colors.green,
-    this.fontWeight,
-  })
-      : super(key: key);
-
-  final int initValue;
-  final double fontSize;
-  final Color colour;
-  final FontWeight fontWeight;
-
-  @override
-  _CustomTimerState createState() => new _CustomTimerState();
-}
-
-typedef TimerCallback(Timer t);
-
-class _CustomTimerState extends State<CustomTimer> {
-  int _curTimeInSecs = 0;
-  Timer countDown;
-
-  void _createCountdown(TimerCallback cb) {
-    const timeout = const Duration(seconds: 1);
-
-    countDown = new Timer.periodic(timeout, cb);
-  }
-
-  void _decrementTime(Timer t) {
-    setState(() {
-      _curTimeInSecs--;
-
-      if (_curTimeInSecs == -1) {
-        countDown.cancel();
-        _curTimeInSecs = widget.initValue;
-      }
-    });
-  }
-
-  @override
-  initState() {
-    super.initState();
-
-    _curTimeInSecs = widget.initValue;
-  }
-
-  @override
-  dispose() {
-    super.dispose();
-
-    if (countDown != null) {
-      countDown.cancel();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new GestureDetector(
-      child: new Text(formatTime(_curTimeInSecs),
-          style: new TextStyle(
-            fontSize: widget.fontSize,
-            color: widget.colour,
-            fontWeight: widget.fontWeight,
-          )),
-      onTap: () {
-        if (countDown != null && countDown.isActive) {
-          countDown.cancel();
-        } else {
-          _createCountdown(_decrementTime);
-        }
-      },
     );
   }
 }
