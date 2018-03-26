@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'in_play.dart';
+import 'workouts.dart';
 import 'settings.dart';
+import 'models.dart';
 
 void main() => runApp(new TimerApp());
 
 class TimerApp extends StatelessWidget {
-  final List<WorkSet> workSets = <WorkSet>[
+  static final List<WorkSet> workSets = <WorkSet>[
     new WorkSet('Swing'),
     new WorkSet('Lunges'),
     new WorkSet('Plank'),
@@ -18,6 +19,15 @@ class TimerApp extends StatelessWidget {
     new WorkSet('Spiderman Press-ups')
   ];
 
+  final List<Workout> workouts = <Workout>[
+    new Workout(
+      '15s/15s VO2 Max',
+      workSets,
+      new Duration(seconds: 15),
+      new Duration(seconds: 15),
+    )
+  ];
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -25,12 +35,7 @@ class TimerApp extends StatelessWidget {
       theme: new ThemeData(
         brightness: Brightness.dark,
       ),
-      home: new InPlayPage(
-        title: '15s/15s VO2 Max',
-        workDuration: new Duration(seconds: 10),
-        restDuration: new Duration(seconds: 7),
-        workSets: workSets,
-      ),
+      home: new WorkoutsPage(workouts),
       routes: <String, WidgetBuilder>{
         '/settings': (BuildContext context) => new SettingsPage(),
       },

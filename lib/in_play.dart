@@ -1,17 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'timer.dart';
-import 'helpers.dart';
-
-class WorkSet {
-  WorkSet(
-    this.name, {
-    this.isComplete: false,
-  });
-
-  final String name;
-  bool isComplete;
-}
+import 'models.dart';
 
 class InPlayPage extends StatefulWidget {
   InPlayPage({
@@ -97,14 +87,6 @@ class _InPlayPageState extends State<InPlayPage> {
         title: new Center(
           child: new Text(widget.title),
         ),
-        actions: <Widget>[
-          new IconButton(
-            icon: new Icon(Icons.settings),
-            onPressed: () {
-              Navigator.of(context).pushNamed('/settings');
-            },
-          )
-        ],
       ),
       body: new ListView(
         children: <Widget>[
