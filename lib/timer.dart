@@ -29,6 +29,7 @@ class CustomTimer extends StatefulWidget {
 
 class _CustomTimerState extends State<CustomTimer> {
   int _curTimeInSecs = 0;
+  bool _freezeOnNextTick = false;
   Timer countDown;
 
   void _createCountdown(TimerCallback cb) {
@@ -45,12 +46,14 @@ class _CustomTimerState extends State<CustomTimer> {
     setState(() {
       _curTimeInSecs--;
 
-      if (_curTimeInSecs == -1) {
-        countDown.cancel();
+      if (_curTimeInSecs == 0 && widget.onComplete != null) {
+        widget.onComplete();
+      }
 
-        if (widget.onComplete != null) {
-          widget.onComplete();
-        }
+      if (_freezeOnNextTick) {
+        _curTimeInSecs = widget.initValue.inSeconds;
+        countDown.cancel();
+        _freezeOnNextTick = false;
       }
     });
   }
@@ -80,7 +83,7 @@ class _CustomTimerState extends State<CustomTimer> {
     if (previous.isFrozen == true && !widget.isFrozen) {
       _createCountdown(_decrementTime);
     } else if (countDown != null && !previous.isFrozen && widget.isFrozen) {
-      countDown.cancel();
+      _freezeOnNextTick = true;
     }
   }
 
