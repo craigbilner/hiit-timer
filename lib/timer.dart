@@ -104,7 +104,7 @@ class _CustomTimerState extends State<CustomTimer> {
       onTap: () {
         if (countDown != null && countDown.isActive) {
           countDown.cancel();
-        } else {
+        } else if (!widget.isFrozen) {
           _createCountdown(_decrementTime);
         }
       },
