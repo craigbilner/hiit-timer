@@ -8,6 +8,7 @@ class CustomTimer extends StatefulWidget {
   CustomTimer({
     Key key,
     this.initValue,
+    this.onComplete,
     this.fontSize: 14.0,
     this.colour: Colors.black,
     this.fontWeight,
@@ -15,6 +16,7 @@ class CustomTimer extends StatefulWidget {
       : super(key: key);
 
   final Duration initValue;
+  final Function onComplete;
   final double fontSize;
   final Color colour;
   final FontWeight fontWeight;
@@ -40,6 +42,10 @@ class _CustomTimerState extends State<CustomTimer> {
       if (_curTimeInSecs == -1) {
         countDown.cancel();
         _curTimeInSecs = widget.initValue.inSeconds;
+
+        if (widget.onComplete != null) {
+          widget.onComplete();
+        }
       }
     });
   }

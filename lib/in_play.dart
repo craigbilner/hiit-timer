@@ -10,7 +10,7 @@ class WorkSet {
   });
 
   final String name;
-  final bool isComplete;
+  bool isComplete;
 }
 
 class InPlayPage extends StatefulWidget {
@@ -57,6 +57,12 @@ class _InPlayPageState extends State<InPlayPage> {
     });
   }
 
+  void _onWorkComplete() {
+    setState(() {
+      currentSet.isComplete = true;
+    });
+  }
+
   @override
   initState() {
     super.initState();
@@ -85,6 +91,7 @@ class _InPlayPageState extends State<InPlayPage> {
           new TimerItem(
             workSet: currentSet,
             initValue: widget.workDuration,
+            onComplete: _onWorkComplete,
             fontSize: widget.fontSize,
             fontWeight: widget.fontWeight,
           ),
@@ -165,12 +172,14 @@ class TimerItem extends StatelessWidget {
     Key key,
     this.workSet,
     this.initValue,
+    this.onComplete,
     this.fontSize: 20.0,
     this.fontWeight: FontWeight.normal,
   });
 
   final WorkSet workSet;
   final Duration initValue;
+  final Function onComplete;
   final double fontSize;
   final FontWeight fontWeight;
 
@@ -181,6 +190,7 @@ class TimerItem extends StatelessWidget {
       subTitle: workSet == null ? '' : workSet.name,
       mainItem: new CustomTimer(
         initValue: initValue,
+        onComplete: onComplete,
         colour: Colors.green,
         fontSize: fontSize,
         fontWeight: fontWeight,
