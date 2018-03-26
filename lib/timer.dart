@@ -8,14 +8,16 @@ class CustomTimer extends StatefulWidget {
   CustomTimer({
     Key key,
     this.initValue,
+    this.isFrozen: true,
     this.onComplete,
-    this.fontSize: 14.0,
     this.colour: Colors.black,
+    this.fontSize: 14.0,
     this.fontWeight,
   })
       : super(key: key);
 
   final Duration initValue;
+  final bool isFrozen;
   final Function onComplete;
   final double fontSize;
   final Color colour;
@@ -25,11 +27,15 @@ class CustomTimer extends StatefulWidget {
   _CustomTimerState createState() => new _CustomTimerState();
 }
 
-class _CustomTimerState extends State<CustomTimer> {
+class _CustomTimerState extends State<CustomTimer> {_
   int _curTimeInSecs = 0;
   Timer countDown;
 
   void _createCountdown(TimerCallback cb) {
+    if (_curTimeInSecs == 0) {
+      return;
+    }
+
     const timeout = const Duration(seconds: 1);
 
     countDown = new Timer.periodic(timeout, cb);
@@ -68,6 +74,17 @@ class _CustomTimerState extends State<CustomTimer> {
   }
 
   @override
+  didUpdateWidget(CustomTimer previous) {
+    super.didUpdateWidget(previous);
+
+    if (previous.isFrozen == true && !widget.isFrozen) {
+      _createCountdown(_decrementTime);
+    } else if (countDown != null && !previous.isFrozen && widget.isFrozen) {
+      countDown.cancel();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new GestureDetector(
       child: new Text(
@@ -84,7 +101,7 @@ class _CustomTimerState extends State<CustomTimer> {
       onTap: () {
         if (countDown != null && countDown.isActive) {
           countDown.cancel();
-        } else if (_curTimeInSecs != 0) {
+        } else {
           _createCountdown(_decrementTime);
         }
       },

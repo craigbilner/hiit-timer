@@ -36,6 +36,8 @@ class InPlayPage extends StatefulWidget {
 
 class _InPlayPageState extends State<InPlayPage> {
   List<WorkSet> currentSets;
+  bool workIsFrozen = false;
+  bool restIsFrozen = true;
 
   int get setsCompleted {
     if (currentSets == null) {
@@ -66,6 +68,17 @@ class _InPlayPageState extends State<InPlayPage> {
     setState(() {
       if (currentSet != null) {
         currentSet.isComplete = true;
+        workIsFrozen = true;
+        restIsFrozen = false;
+      }
+    });
+  }
+
+  void _onRestComplete() {
+    setState(() {
+      if (currentSet != null) {
+        workIsFrozen = false;
+        restIsFrozen = true;
       }
     });
   }
@@ -96,14 +109,21 @@ class _InPlayPageState extends State<InPlayPage> {
       body: new ListView(
         children: <Widget>[
           new TimerItem(
-            workSet: currentSet,
+            'Work',
+            subTitle: currentSet == null ? null : currentSet.name,
             initValue: widget.workDuration,
+            isFrozen: workIsFrozen,
             onComplete: _onWorkComplete,
+            colour: Colors.green,
             fontSize: widget.fontSize,
             fontWeight: widget.fontWeight,
           ),
-          new RestItem(
-            duration: widget.restDuration,
+          new TimerItem(
+            'Rest',
+            initValue: widget.restDuration,
+            isFrozen: restIsFrozen,
+            onComplete: _onRestComplete,
+            colour: Colors.blue,
             fontSize: widget.fontSize,
             fontWeight: widget.fontWeight,
           ),
@@ -175,60 +195,39 @@ class ListItem extends StatelessWidget {
 }
 
 class TimerItem extends StatelessWidget {
-  TimerItem({
+  TimerItem(
+    this.title, {
     Key key,
-    this.workSet,
+    this.subTitle: '',
     this.initValue,
+    this.isFrozen: true,
     this.onComplete,
+    this.colour: Colors.black,
     this.fontSize: 20.0,
     this.fontWeight: FontWeight.normal,
   });
 
-  final WorkSet workSet;
+  final String title;
+  final String subTitle;
   final Duration initValue;
+  final bool isFrozen;
   final Function onComplete;
+  final Color colour;
   final double fontSize;
   final FontWeight fontWeight;
 
   @override
   Widget build(BuildContext context) {
     return new ListItem(
-      title: 'Work',
-      subTitle: workSet == null ? '' : workSet.name,
+      title: title,
+      subTitle: subTitle,
       mainItem: new CustomTimer(
         initValue: initValue,
+        isFrozen: isFrozen,
         onComplete: onComplete,
-        colour: Colors.green,
+        colour: colour,
         fontSize: fontSize,
         fontWeight: fontWeight,
-      ),
-    );
-  }
-}
-
-class RestItem extends StatelessWidget {
-  RestItem({
-    Key key,
-    @required this.duration,
-    this.fontSize: 20.0,
-    this.fontWeight: FontWeight.normal,
-  });
-
-  final Duration duration;
-  final double fontSize;
-  final FontWeight fontWeight;
-
-  @override
-  Widget build(BuildContext context) {
-    return new ListItem(
-      title: 'Rest',
-      mainItem: new Text(
-        formatTime(duration),
-        style: new TextStyle(
-          color: Colors.blue,
-          fontSize: fontSize,
-          fontWeight: fontWeight,
-        ),
       ),
     );
   }
