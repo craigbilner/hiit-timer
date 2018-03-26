@@ -39,9 +39,8 @@ class _CustomTimerState extends State<CustomTimer> {
     setState(() {
       _curTimeInSecs--;
 
-      if (_curTimeInSecs == -1) {
+      if (_curTimeInSecs == 0) {
         countDown.cancel();
-        _curTimeInSecs = widget.initValue.inSeconds;
 
         if (widget.onComplete != null) {
           widget.onComplete();
@@ -85,7 +84,7 @@ class _CustomTimerState extends State<CustomTimer> {
       onTap: () {
         if (countDown != null && countDown.isActive) {
           countDown.cancel();
-        } else {
+        } else if (_curTimeInSecs != 0) {
           _createCountdown(_decrementTime);
         }
       },

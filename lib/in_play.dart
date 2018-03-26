@@ -52,14 +52,21 @@ class _InPlayPageState extends State<InPlayPage> {
       return null;
     }
 
-    return currentSets.firstWhere((WorkSet ws) {
-      return !ws.isComplete;
-    });
+    return currentSets.firstWhere(
+      (WorkSet ws) {
+        return !ws.isComplete;
+      },
+      orElse: () {
+        return null;
+      },
+    );
   }
 
   void _onWorkComplete() {
     setState(() {
-      currentSet.isComplete = true;
+      if (currentSet != null) {
+        currentSet.isComplete = true;
+      }
     });
   }
 
