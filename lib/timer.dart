@@ -9,7 +9,7 @@ class CustomTimer extends StatefulWidget {
     Key key,
     this.initValue,
     this.fontSize: 14.0,
-    this.colour: Colors.green,
+    this.colour: Colors.black,
     this.fontWeight,
   })
       : super(key: key);

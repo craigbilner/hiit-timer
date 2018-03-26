@@ -3,29 +3,73 @@ import 'package:flutter/material.dart';
 import 'timer.dart';
 import 'helpers.dart';
 
-class InPlayPage extends StatelessWidget {
+class WorkSet {
+  WorkSet(
+    this.name, {
+    this.isComplete: false,
+  });
+
+  final String name;
+  final bool isComplete;
+}
+
+class InPlayPage extends StatefulWidget {
   InPlayPage({
     Key key,
     @required this.title,
-    @required this.activity,
     @required this.workDuration,
     @required this.restDuration,
+    this.workSets,
   })
       : super(key: key);
 
   final String title;
-  final String activity;
   final Duration workDuration;
   final Duration restDuration;
+  final List<WorkSet> workSets;
   final double fontSize = 75.0;
   final FontWeight fontWeight = FontWeight.w100;
+
+  @override
+  _InPlayPageState createState() => new _InPlayPageState();
+}
+
+class _InPlayPageState extends State<InPlayPage> {
+  List<WorkSet> currentSets;
+
+  int get setsCompleted {
+    if (currentSets == null) {
+      return 0;
+    }
+
+    return currentSets.where((WorkSet ws) {
+      return ws.isComplete;
+    }).length;
+  }
+
+  WorkSet get currentSet {
+    if (currentSets == null) {
+      return null;
+    }
+
+    return currentSets.firstWhere((WorkSet ws) {
+      return !ws.isComplete;
+    });
+  }
+
+  @override
+  initState() {
+    super.initState();
+
+    currentSets = new List.from(widget.workSets);
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Center(
-          child: new Text(title),
+          child: new Text(widget.title),
         ),
         actions: <Widget>[
           new IconButton(
@@ -39,23 +83,21 @@ class InPlayPage extends StatelessWidget {
       body: new ListView(
         children: <Widget>[
           new TimerItem(
-            activity: activity,
-            initValue: workDuration,
-            fontSize: fontSize,
-            fontWeight: fontWeight,
+            workSet: currentSet,
+            initValue: widget.workDuration,
+            fontSize: widget.fontSize,
+            fontWeight: widget.fontWeight,
           ),
           new RestItem(
-            duration: restDuration,
-            fontSize: fontSize,
-            fontWeight: fontWeight,
-          ),
-          new RepsItem(
-            fontSize: fontSize,
-            fontWeight: fontWeight,
+            duration: widget.restDuration,
+            fontSize: widget.fontSize,
+            fontWeight: widget.fontWeight,
           ),
           new SetsItem(
-            fontSize: fontSize,
-            fontWeight: fontWeight,
+            setsCompleted: setsCompleted,
+            totalSets: widget.workSets.length,
+            fontSize: widget.fontSize,
+            fontWeight: widget.fontWeight,
           ),
         ],
       ),
@@ -121,13 +163,13 @@ class ListItem extends StatelessWidget {
 class TimerItem extends StatelessWidget {
   TimerItem({
     Key key,
-    @required this.activity,
+    this.workSet,
     this.initValue,
     this.fontSize: 20.0,
     this.fontWeight: FontWeight.normal,
   });
 
-  final String activity;
+  final WorkSet workSet;
   final Duration initValue;
   final double fontSize;
   final FontWeight fontWeight;
@@ -136,9 +178,10 @@ class TimerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return new ListItem(
       title: 'Work',
-      subTitle: activity,
+      subTitle: workSet == null ? '' : workSet.name,
       mainItem: new CustomTimer(
         initValue: initValue,
+        colour: Colors.green,
         fontSize: fontSize,
         fontWeight: fontWeight,
       ),
@@ -161,6 +204,7 @@ class RestItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new ListItem(
+      title: 'Rest',
       mainItem: new Text(
         formatTime(duration),
         style: new TextStyle(
@@ -169,34 +213,6 @@ class RestItem extends StatelessWidget {
           fontWeight: fontWeight,
         ),
       ),
-      title: 'Rest',
-    );
-  }
-}
-
-class RepsItem extends StatelessWidget {
-  RepsItem({
-    Key key,
-    this.fontSize: 20.0,
-    this.fontWeight: FontWeight.normal,
-  });
-
-  final double fontSize;
-  final FontWeight fontWeight;
-
-  @override
-  Widget build(BuildContext context) {
-    return new ListItem(
-      mainItem: new Text(
-        '0 / 1',
-        style: new TextStyle(
-          color: Colors.white,
-          fontSize: fontSize,
-          fontWeight: fontWeight,
-        ),
-      ),
-      title: 'Reps',
-      subTitle: 'Interval',
     );
   }
 }
@@ -204,18 +220,26 @@ class RepsItem extends StatelessWidget {
 class SetsItem extends StatelessWidget {
   SetsItem({
     Key key,
+    this.setsCompleted: 0,
+    this.totalSets,
     this.fontSize: 20.0,
     this.fontWeight: FontWeight.normal,
   });
 
+  final int setsCompleted;
+  final int totalSets;
   final double fontSize;
   final FontWeight fontWeight;
 
   @override
   Widget build(BuildContext context) {
+    var text = totalSets != 0
+        ? '$setsCompleted / $totalSets'
+        : setsCompleted.toString();
+
     return new ListItem(
       mainItem: new Text(
-        '1 / 200',
+        text,
         style: new TextStyle(
           color: Colors.orange,
           fontSize: fontSize,
