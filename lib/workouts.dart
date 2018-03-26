@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'models.dart';
+import 'in_play.dart';
 
 class Workout {
   Workout(this.name, this.workSets, this.workDuration, this.restDuration);
@@ -32,18 +33,36 @@ class WorkoutsPage extends StatelessWidget {
         ],
       ),
       body: new ListView(
-          children: workouts
-              .map((Workout w) => new ListTile(
-                    title: new Text(w.name),
-                    trailing: new Icon(
-                      Icons.arrow_right,
-                      size: 50.0,
+        padding: const EdgeInsets.symmetric(
+          vertical: 16.0,
+        ),
+        children: workouts
+            .map((Workout w) => new ListTile(
+                  title: new Text(
+                    w.name,
+                    style: new TextStyle(
+                      fontSize: 25.0,
                     ),
-                    onTap: () {
-                      Navigator.of(context).push(route)
-                    },
-                  ))
-              .toList()),
+                  ),
+                  trailing: new Icon(
+                    Icons.arrow_right,
+                    size: 50.0,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                          new MaterialPageRoute(
+                            builder: (BuildContext bc) => new InPlayPage(
+                                  title: w.name,
+                                  workDuration: w.workDuration,
+                                  restDuration: w.restDuration,
+                                  workSets: w.workSets,
+                                ),
+                          ),
+                        );
+                  },
+                ))
+            .toList(),
+      ),
     );
   }
 }
