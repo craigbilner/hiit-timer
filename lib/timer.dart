@@ -82,7 +82,10 @@ class _CustomTimerState extends State<CustomTimer> {
 
     if (previous.isFrozen == true && !widget.isFrozen) {
       _createCountdown(_decrementTime);
-    } else if (countDown != null && !previous.isFrozen && widget.isFrozen) {
+    } else if (countDown != null &&
+        countDown.isActive &&
+        !previous.isFrozen &&
+        widget.isFrozen) {
       _freezeOnNextTick = true;
     }
   }
