@@ -27,7 +27,7 @@ class CustomTimer extends StatefulWidget {
   _CustomTimerState createState() => new _CustomTimerState();
 }
 
-class _CustomTimerState extends State<CustomTimer> {_
+class _CustomTimerState extends State<CustomTimer> {
   int _curTimeInSecs = 0;
   Timer countDown;
 
@@ -45,7 +45,7 @@ class _CustomTimerState extends State<CustomTimer> {_
     setState(() {
       _curTimeInSecs--;
 
-      if (_curTimeInSecs == 0) {
+      if (_curTimeInSecs == -1) {
         countDown.cancel();
 
         if (widget.onComplete != null) {
