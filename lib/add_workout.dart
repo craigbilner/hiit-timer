@@ -35,6 +35,7 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
           new TimeWheel(
             title: 'Work Duration',
             seconds: 30,
+            colour: Colors.green,
           ),
           new Padding(
             padding: const EdgeInsets.symmetric(
@@ -43,6 +44,7 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
             child: new TimeWheel(
               title: 'Rest Duration',
               seconds: 15,
+              colour: Colors.blue,
             ),
           ),
           new Container(
@@ -70,11 +72,13 @@ class TimeWheel extends StatelessWidget {
     this.title,
     this.minutes: 0,
     this.seconds: 0,
+    this.colour,
   });
 
   final String title;
   final int minutes;
   final int seconds;
+  final Color colour;
   final TextStyle wheelLabel = new TextStyle(
     color: Colors.white,
     fontSize: 20.0,
@@ -118,19 +122,15 @@ class TimeWheel extends StatelessWidget {
         ),
         new Row(
           children: [
-            new TimeUnitWheel(
-              initialItem: minutes,
-            ),
+            new TimeUnitWheel(initialItem: minutes, colour: colour),
             new Text(
               ':',
               style: new TextStyle(
-                color: Colors.white,
+                color: colour,
                 fontSize: 50.0,
               ),
             ),
-            new TimeUnitWheel(
-              initialItem: seconds,
-            ),
+            new TimeUnitWheel(initialItem: seconds, colour: colour),
           ],
         ),
       ],
@@ -139,12 +139,17 @@ class TimeWheel extends StatelessWidget {
 }
 
 class TimeUnitWheel extends StatelessWidget {
-  TimeUnitWheel({Key key, this.initialItem: 0})
+  TimeUnitWheel({
+    Key key,
+    this.initialItem: 0,
+    this.colour,
+  })
       : _controller = new FixedExtentScrollController(
           initialItem: initialItem,
         );
 
   final int initialItem;
+  final Color colour;
   final FixedExtentScrollController _controller;
   final List<int> timeUnits = new List.generate(
     60,
@@ -168,6 +173,7 @@ class TimeUnitWheel extends StatelessWidget {
                     toTwoDigits(second),
                     style: new TextStyle(
                       fontSize: 50.0,
+                      color: colour,
                     ),
                   ),
             )
