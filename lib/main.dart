@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'workouts.dart';
 import 'settings.dart';
-import 'add_workout.dart';
+import 'create_workout.dart';
 import 'models.dart';
 
 void main() => runApp(new TimerApp());
@@ -38,7 +38,7 @@ class TimerApp extends StatelessWidget {
       ),
       home: new WorkoutsPage(workouts),
       routes: <String, WidgetBuilder>{
-        '/add_workout': (BuildContext context) => new AddWorkoutPage(),
+        '/add_workout': (BuildContext context) => new CreateWorkoutPage(),
         '/settings': (BuildContext context) => new SettingsPage(),
       },
     );

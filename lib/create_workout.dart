@@ -4,28 +4,43 @@ import 'edit_time.dart';
 import 'edit_text.dart';
 import 'models.dart';
 
-class AddWorkoutPage extends StatelessWidget {
+class CreateWorkoutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Center(
           child: new Text(
-            'Add Workout',
+            'Create Workout',
+            style: new TextStyle(
+              fontSize: 25.0,
+            ),
           ),
         ),
+        actions: <Widget>[
+          new MaterialButton(
+            child: new Text(
+              'Create',
+              style: new TextStyle(
+                color: Colors.white,
+                fontSize: 25.0,
+              ),
+            ),
+            onPressed: null,
+          ),
+        ],
       ),
-      body: new AddWorkoutForm(),
+      body: new CreateWorkoutForm(),
     );
   }
 }
 
-class AddWorkoutForm extends StatefulWidget {
+class CreateWorkoutForm extends StatefulWidget {
   @override
-  _AddWorkoutFormState createState() => new _AddWorkoutFormState();
+  _CreateWorkoutFormState createState() => new _CreateWorkoutFormState();
 }
 
-class _AddWorkoutFormState extends State<AddWorkoutForm> {
+class _CreateWorkoutFormState extends State<CreateWorkoutForm> {
   TimeDuration workDuration = new TimeDuration(
     new Duration(
       seconds: 30,
@@ -37,6 +52,7 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
     ),
   );
   String workoutName = 'New Workout';
+  List<WorkSet> workSets = [];
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +67,14 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
             subTitleColour: Colors.grey,
             onTap: () async {
               var newName = await Navigator.of(context).push(
-                new MaterialPageRoute(
-                  builder: (BuildContext context) => new EditTextPage(
-                    title: 'Workout Name',
-                    initValue: workoutName,
-                    hintText: 'Enter A Workout Name',
-                  ),
-                ),
-              );
+                    new MaterialPageRoute(
+                      builder: (BuildContext context) => new EditTextPage(
+                            title: 'Workout Name',
+                            initValue: workoutName,
+                            hintText: 'Enter A Workout Name',
+                          ),
+                    ),
+                  );
 
               if (newName != null) {
                 workoutName = newName;
@@ -105,19 +121,23 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
               }
             },
           ),
-          new Container(
-            alignment: Alignment.centerRight,
-            child: new RaisedButton(
-              onPressed: () {},
-              child: new Text(
-                'Add',
-                style: new TextStyle(
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          )
+          new ListItem(
+            title: 'Sets',
+            subTitle: workSets.length == 0 ? 'None Added' : '',
+            subTitleColour: Colors.grey,
+          ),
+          new Column(
+            children: workSets
+                .map(
+                  (WorkSet ws) => new Text(
+                        ws.name,
+                        style: new TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                )
+                .toList(),
+          ),
         ],
       ),
     );
