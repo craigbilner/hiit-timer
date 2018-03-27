@@ -64,8 +64,8 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
               Icons.arrow_right,
               size: 50.0,
             ),
-            onTap: () {
-              Navigator.of(context).push(
+            onTap: () async {
+              var newDuration = await Navigator.of(context).push(
                     new MaterialPageRoute(
                       builder: (BuildContext context) => new EditTimePage(
                             title: 'Work Duration',
@@ -74,6 +74,10 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
                           ),
                     ),
                   );
+
+              if (newDuration != null) {
+                workDuration = newDuration;
+              }
             },
           ),
           new Padding(
@@ -109,7 +113,9 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
                       ),
                     );
 
-                workDuration = newDuration;
+                if (newDuration != null) {
+                  restDuration = newDuration;
+                }
               },
             ),
           ),

@@ -43,4 +43,13 @@ class TimeDuration {
 
     return '$mins:$secs';
   }
+
+  TimeDuration clone() {
+    return new TimeDuration(
+      new Duration(
+        minutes: minutes,
+        seconds: seconds,
+      ),
+    );
+  }
 }

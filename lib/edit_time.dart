@@ -4,7 +4,7 @@ import 'models.dart';
 typedef OnSelectedItemChanged(int indx);
 typedef OnChange(TimeDuration duration);
 
-class EditTimePage extends StatelessWidget {
+class EditTimePage extends StatefulWidget {
   EditTimePage({
     Key key,
     this.title,
@@ -13,23 +13,49 @@ class EditTimePage extends StatelessWidget {
   });
 
   final String title;
-  TimeDuration duration;
+  final TimeDuration duration;
   final Color colour;
+
+  @override
+  _EditTimePageState createState() => new _EditTimePageState();
+}
+
+class _EditTimePageState extends State<EditTimePage> {
+  TimeDuration duration;
+
+  @override
+  initState() {
+    super.initState();
+
+    duration = widget.duration;
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('Edit Time'),
+        actions: <Widget>[
+          new MaterialButton(
+            child: new Text(
+              'Save',
+              style: new TextStyle(
+                color: Colors.white,
+                fontSize: 25.0,
+              ),
+            ),
+            onPressed: () => Navigator.of(context).pop(duration),
+          ),
+        ],
       ),
       body: new Padding(
         padding: const EdgeInsets.all(16.0),
         child: new TimeWheel(
-          title: title,
+          title: widget.title,
           duration: duration,
-          colour: colour,
-          onChange: (TimeDuration duration) {
-            duration = duration;
+          colour: widget.colour,
+          onChange: (TimeDuration newDuration) {
+            duration = newDuration;
           },
         ),
       ),
@@ -37,7 +63,7 @@ class EditTimePage extends StatelessWidget {
   }
 }
 
-class TimeWheel extends StatelessWidget {
+class TimeWheel extends StatefulWidget {
   TimeWheel({
     Key key,
     this.title,
@@ -47,9 +73,16 @@ class TimeWheel extends StatelessWidget {
   });
 
   final String title;
-  TimeDuration duration;
+  final TimeDuration duration;
   final Color colour;
   final OnChange onChange;
+
+  @override
+  _TimeWheelState createState() => new _TimeWheelState();
+}
+
+class _TimeWheelState extends State<TimeWheel> {
+  TimeDuration duration;
   final TextStyle wheelLabel = new TextStyle(
     color: Colors.white,
     fontSize: 20.0,
@@ -58,17 +91,24 @@ class TimeWheel extends StatelessWidget {
   void _onMinuteChange(int minute) {
     duration.minutes = minute;
 
-    if (onChange != null) {
-      onChange(duration);
+    if (widget.onChange != null) {
+      widget.onChange(duration);
     }
   }
 
   void _onSecondChange(int second) {
     duration.seconds = second;
 
-    if (onChange != null) {
-      onChange(duration);
+    if (widget.onChange != null) {
+      widget.onChange(duration);
     }
+  }
+
+  @override
+  initState() {
+    super.initState();
+
+    duration = widget.duration.clone();
   }
 
   @override
@@ -77,7 +117,7 @@ class TimeWheel extends StatelessWidget {
       children: <Widget>[
         new Container(
           child: new Text(
-            title,
+            widget.title,
             style: new TextStyle(
               fontSize: 30.0,
             ),
@@ -111,19 +151,19 @@ class TimeWheel extends StatelessWidget {
           children: [
             new TimeUnitWheel(
               initialItem: duration.minutes,
-              colour: colour,
+              colour: widget.colour,
               onSelectedItemChanged: _onMinuteChange,
             ),
             new Text(
               ':',
               style: new TextStyle(
-                color: colour,
+                color: widget.colour,
                 fontSize: 50.0,
               ),
             ),
             new TimeUnitWheel(
               initialItem: duration.seconds,
-              colour: colour,
+              colour: widget.colour,
               onSelectedItemChanged: _onSecondChange,
             ),
           ],
