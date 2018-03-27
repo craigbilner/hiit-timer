@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'edit_time.dart';
+import 'edit_text.dart';
 import 'models.dart';
 
 class AddWorkoutPage extends StatelessWidget {
@@ -24,7 +26,6 @@ class AddWorkoutForm extends StatefulWidget {
 }
 
 class _AddWorkoutFormState extends State<AddWorkoutForm> {
-  // final TextEditingController _controller = new TextEditingController();
   TimeDuration workDuration = new TimeDuration(
     new Duration(
       seconds: 30,
@@ -35,9 +36,7 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
       seconds: 15,
     ),
   );
-
-  final double titleSize = 30.0;
-  final double subTitleSize = 25.0;
+  String workoutName = 'New Workout';
 
   @override
   Widget build(BuildContext context) {
@@ -46,24 +45,30 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          new ListTile(
-            title: new Text(
-              'Work Duration',
-              style: new TextStyle(
-                fontSize: titleSize,
-              ),
-            ),
-            subtitle: new Text(
-              workDuration.toString(),
-              style: new TextStyle(
-                fontSize: subTitleSize,
-                color: Colors.green,
-              ),
-            ),
-            trailing: new Icon(
-              Icons.arrow_right,
-              size: 50.0,
-            ),
+          new ListItem(
+            title: 'Workout Name',
+            subTitle: workoutName,
+            subTitleColour: Colors.grey,
+            onTap: () async {
+              var newName = await Navigator.of(context).push(
+                new MaterialPageRoute(
+                  builder: (BuildContext context) => new EditTextPage(
+                    title: 'Workout Name',
+                    initValue: workoutName,
+                    hintText: 'Enter A Workout Name',
+                  ),
+                ),
+              );
+
+              if (newName != null) {
+                workoutName = newName;
+              }
+            },
+          ),
+          new ListItem(
+            title: 'Work Duration',
+            subTitle: workDuration.toString(),
+            subTitleColour: Colors.green,
             onTap: () async {
               var newDuration = await Navigator.of(context).push(
                     new MaterialPageRoute(
@@ -80,44 +85,25 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
               }
             },
           ),
-          new Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 32.0,
-            ),
-            child: new ListTile(
-              title: new Text(
-                'Rest Duration',
-                style: new TextStyle(
-                  fontSize: titleSize,
-                ),
-              ),
-              subtitle: new Text(
-                restDuration.toString(),
-                style: new TextStyle(
-                  fontSize: subTitleSize,
-                  color: Colors.blue,
-                ),
-              ),
-              trailing: new Icon(
-                Icons.arrow_right,
-                size: 50.0,
-              ),
-              onTap: () async {
-                var newDuration = await Navigator.of(context).push(
-                      new MaterialPageRoute(
-                        builder: (BuildContext context) => new EditTimePage(
-                              title: 'Rest Duration',
-                              duration: restDuration,
-                              colour: Colors.blue,
-                            ),
-                      ),
-                    );
+          new ListItem(
+            title: 'Rest Duration',
+            subTitle: restDuration.toString(),
+            subTitleColour: Colors.blue,
+            onTap: () async {
+              var newDuration = await Navigator.of(context).push(
+                    new MaterialPageRoute(
+                      builder: (BuildContext context) => new EditTimePage(
+                            title: 'Rest Duration',
+                            duration: restDuration,
+                            colour: Colors.blue,
+                          ),
+                    ),
+                  );
 
-                if (newDuration != null) {
-                  restDuration = newDuration;
-                }
-              },
-            ),
+              if (newDuration != null) {
+                restDuration = newDuration;
+              }
+            },
           ),
           new Container(
             alignment: Alignment.centerRight,
@@ -133,6 +119,51 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class ListItem extends StatelessWidget {
+  ListItem({
+    Key key,
+    @required this.title,
+    @required this.subTitle,
+    this.subTitleColour: Colors.white,
+    this.onTap,
+  });
+
+  final String title;
+  final String subTitle;
+  final Color subTitleColour;
+  final Function onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return new Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 16.0,
+      ),
+      child: new ListTile(
+        title: new Text(
+          title,
+          style: new TextStyle(
+            fontSize: 30.0,
+          ),
+        ),
+        subtitle: new Text(
+          subTitle,
+          style: new TextStyle(
+            fontSize: 25.0,
+            color: subTitleColour,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: new Icon(
+          Icons.arrow_right,
+          size: 50.0,
+        ),
+        onTap: onTap,
       ),
     );
   }
