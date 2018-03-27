@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'helpers.dart';
+import 'models.dart';
 
 typedef TimerCallback(Timer t);
 
@@ -94,16 +94,18 @@ class _CustomTimerState extends State<CustomTimer> {
   Widget build(BuildContext context) {
     return new GestureDetector(
       child: new Text(
-          formatTime(
-            new Duration(
-              seconds: _curTimeInSecs,
-            ),
+        new TimeDuration(
+          new Duration(
+            seconds: _curTimeInSecs,
           ),
-          style: new TextStyle(
-            fontSize: widget.fontSize,
-            color: widget.colour,
-            fontWeight: widget.fontWeight,
-          )),
+        )
+            .toString(),
+        style: new TextStyle(
+          fontSize: widget.fontSize,
+          color: widget.colour,
+          fontWeight: widget.fontWeight,
+        ),
+      ),
       onTap: () {
         if (countDown != null && countDown.isActive) {
           countDown.cancel();

@@ -32,7 +32,7 @@ class TimerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Gym Timer',
+      title: 'HIIT Timer',
       theme: new ThemeData(
         brightness: Brightness.dark,
       ),
