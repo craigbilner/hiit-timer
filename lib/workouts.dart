@@ -32,6 +32,12 @@ class WorkoutsPage extends StatelessWidget {
           )
         ],
       ),
+      floatingActionButton: new FloatingActionButton(
+        onPressed: () => Navigator.of(context).pushNamed('/add_workout'),
+        child: new Icon(
+          Icons.add,
+        ),
+      ),
       body: new ListView(
         padding: const EdgeInsets.symmetric(
           vertical: 16.0,
