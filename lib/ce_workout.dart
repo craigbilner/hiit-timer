@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'edit_time.dart';
 import 'edit_text.dart';
+import 'ce_sets.dart';
 import 'models.dart';
 
 class CreateEditWorkoutPage extends StatelessWidget {
@@ -125,18 +126,44 @@ class _CreateEditWorkoutFormState extends State<CreateEditWorkoutForm> {
             title: 'Sets',
             subTitle: workSets.length == 0 ? 'None Added' : '',
             subTitleColour: Colors.grey,
+            onTap: () async {
+              var newWorkSets = await Navigator.of(context).push(
+                    new MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          new CreateEditWorkSetsPage(
+                            workSets: workSets,
+                          ),
+                    ),
+                  );
+
+              if (newWorkSets != null) {
+                workSets = newWorkSets;
+              }
+            },
           ),
-          new Column(
-            children: workSets
-                .map(
-                  (WorkSet ws) => new Text(
-                        ws.name,
-                        style: new TextStyle(
-                          color: Colors.grey,
+          new Padding(
+            padding: const EdgeInsets.only(
+              left: 16.0,
+            ),
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: workSets
+                  .map(
+                    (WorkSet ws) => new Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 4.0,
+                          ),
+                          child: new Text(
+                            ws.name,
+                            style: new TextStyle(
+                              color: Colors.grey,
+                              fontSize: 20.0,
+                            ),
+                          ),
                         ),
-                      ),
-                )
-                .toList(),
+                  )
+                  .toList(),
+            ),
           ),
         ],
       ),
@@ -161,8 +188,8 @@ class ListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 16.0,
+      padding: const EdgeInsets.only(
+        top: 16.0,
       ),
       child: new ListTile(
         title: new Text(
