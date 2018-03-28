@@ -4,43 +4,43 @@ import 'edit_time.dart';
 import 'edit_text.dart';
 import 'models.dart';
 
-class CreateWorkoutPage extends StatelessWidget {
+class CreateEditWorkoutPage extends StatelessWidget {
+  CreateEditWorkoutPage({
+    Key key,
+    this.actionName,
+  });
+
+  final String actionName;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Center(
-          child: new Text(
-            'Create Workout',
-            style: new TextStyle(
-              fontSize: 25.0,
-            ),
-          ),
-        ),
         actions: <Widget>[
           new MaterialButton(
             child: new Text(
-              'Create',
+              actionName,
               style: new TextStyle(
                 color: Colors.white,
-                fontSize: 25.0,
+                fontSize: 20.0,
               ),
             ),
             onPressed: null,
           ),
         ],
       ),
-      body: new CreateWorkoutForm(),
+      body: new CreateEditWorkoutForm(),
     );
   }
 }
 
-class CreateWorkoutForm extends StatefulWidget {
+class CreateEditWorkoutForm extends StatefulWidget {
   @override
-  _CreateWorkoutFormState createState() => new _CreateWorkoutFormState();
+  _CreateEditWorkoutFormState createState() =>
+      new _CreateEditWorkoutFormState();
 }
 
-class _CreateWorkoutFormState extends State<CreateWorkoutForm> {
+class _CreateEditWorkoutFormState extends State<CreateEditWorkoutForm> {
   TimeDuration workDuration = new TimeDuration(
     new Duration(
       seconds: 30,
@@ -168,13 +168,13 @@ class ListItem extends StatelessWidget {
         title: new Text(
           title,
           style: new TextStyle(
-            fontSize: 30.0,
+            fontSize: 25.0,
           ),
         ),
         subtitle: new Text(
           subTitle,
           style: new TextStyle(
-            fontSize: 25.0,
+            fontSize: 20.0,
             color: subTitleColour,
           ),
           overflow: TextOverflow.ellipsis,

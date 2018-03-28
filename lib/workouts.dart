@@ -33,7 +33,7 @@ class WorkoutsPage extends StatelessWidget {
         ],
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamed('/add_workout'),
+        onPressed: () => Navigator.of(context).pushNamed('/create_workout'),
         child: new Icon(
           Icons.add,
         ),
