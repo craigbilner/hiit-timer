@@ -14,8 +14,8 @@ class InPlayPage extends StatefulWidget {
       : super(key: key);
 
   final String title;
-  final Duration workDuration;
-  final Duration restDuration;
+  final TimeDuration workDuration;
+  final TimeDuration restDuration;
   final List<WorkSet> workSets;
   final double fontSize = 75.0;
   final FontWeight fontWeight = FontWeight.w100;
@@ -191,7 +191,7 @@ class TimerItem extends StatelessWidget {
 
   final String title;
   final String subTitle;
-  final Duration initValue;
+  final TimeDuration initValue;
   final bool isFrozen;
   final Function onComplete;
   final Color colour;

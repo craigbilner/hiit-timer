@@ -16,7 +16,7 @@ class CustomTimer extends StatefulWidget {
   })
       : super(key: key);
 
-  final Duration initValue;
+  final TimeDuration initValue;
   final bool isFrozen;
   final Function onComplete;
   final double fontSize;

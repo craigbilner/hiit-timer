@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:async';
+import 'dart:io';
 import 'edit_time.dart';
 import 'edit_text.dart';
 import 'ce_sets.dart';
@@ -12,6 +15,26 @@ class CreateEditWorkoutPage extends StatelessWidget {
   });
 
   final String actionName;
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+
+    return new File('$path/workouts.txt');
+  }
+
+  Future<File> writeWorkout(Workout w) async {
+    final file = await _localFile;
+
+    print(w.toString());
+
+    return file.writeAsString(w.toString());
+  }
 
   @override
   Widget build(BuildContext context) {

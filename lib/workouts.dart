@@ -2,15 +2,6 @@ import 'package:flutter/material.dart';
 import 'models.dart';
 import 'in_play.dart';
 
-class Workout {
-  Workout(this.name, this.workSets, this.workDuration, this.restDuration);
-
-  final String name;
-  final List<WorkSet> workSets;
-  final Duration workDuration;
-  final Duration restDuration;
-}
-
 class WorkoutsPage extends StatelessWidget {
   WorkoutsPage(this.workouts, {Key key}) : super(key: key);
 

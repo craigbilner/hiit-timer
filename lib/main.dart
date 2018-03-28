@@ -23,9 +23,17 @@ class TimerApp extends StatelessWidget {
   final List<Workout> workouts = <Workout>[
     new Workout(
       '15s/15s VO2 Max',
+      new TimeDuration(
+        new Duration(
+          seconds: 15,
+        ),
+      ),
+      new TimeDuration(
+        new Duration(
+          seconds: 15,
+        ),
+      ),
       workSets,
-      new Duration(seconds: 15),
-      new Duration(seconds: 15),
     )
   ];
 

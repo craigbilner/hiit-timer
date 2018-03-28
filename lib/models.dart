@@ -1,3 +1,17 @@
+class Workout {
+  Workout(
+    this.name,
+    this.workDuration,
+    this.restDuration,
+    this.workSets,
+  );
+
+  final String name;
+  final TimeDuration workDuration;
+  final TimeDuration restDuration;
+  final List<WorkSet> workSets;
+}
+
 class WorkSet {
   WorkSet(
     this.name, {
@@ -19,6 +33,10 @@ class TimeDuration {
 
   int get seconds {
     return duration.inSeconds - (minutes * 60);
+  }
+
+  int get inSeconds {
+    return duration.inSeconds;
   }
 
   set minutes(int minute) {
