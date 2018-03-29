@@ -3,18 +3,38 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 import 'edit_time.dart';
 import 'edit_text.dart';
 import 'ce_sets.dart';
 import 'models.dart';
 
-class CreateEditWorkoutPage extends StatelessWidget {
+class CreateEditWorkoutPage extends StatefulWidget {
   CreateEditWorkoutPage({
     Key key,
     this.actionName,
   });
 
   final String actionName;
+
+  @override
+  _CreateEditWorkoutPageState createState() =>
+      new _CreateEditWorkoutPageState();
+}
+
+class _CreateEditWorkoutPageState extends State<CreateEditWorkoutPage> {
+  TimeDuration workDuration = new TimeDuration(
+    new Duration(
+      seconds: 30,
+    ),
+  );
+  TimeDuration restDuration = new TimeDuration(
+    new Duration(
+      seconds: 15,
+    ),
+  );
+  String workoutName = 'New Workout';
+  List<WorkSet> workSets = [];
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -31,9 +51,31 @@ class CreateEditWorkoutPage extends StatelessWidget {
   Future<File> writeWorkout(Workout w) async {
     final file = await _localFile;
 
-    print(w.toString());
-
     return file.writeAsString(w.toString());
+  }
+
+  _onNameChange(String newName) {
+    if (newName != null) {
+      workoutName = newName;
+    }
+  }
+
+  _onWorkDurationChange(TimeDuration wd) {
+    if (wd != null) {
+      workDuration = wd;
+    }
+  }
+
+  _onRestDurationChange(TimeDuration rd) {
+    if (rd != null) {
+      restDuration = rd;
+    }
+  }
+
+  _onWorkSetsChange(List<WorkSet> wss) {
+    if (wss != null) {
+      workSets = wss;
+    }
   }
 
   @override
@@ -43,40 +85,56 @@ class CreateEditWorkoutPage extends StatelessWidget {
         actions: <Widget>[
           new MaterialButton(
             child: new Text(
-              actionName,
+              widget.actionName,
               style: new TextStyle(
                 color: Colors.white,
                 fontSize: 20.0,
               ),
             ),
-            onPressed: null,
+            onPressed: () => print(json.encode(new Workout(
+                  workoutName,
+                  workDuration,
+                  restDuration,
+                  workSets,
+                ))),
           ),
         ],
       ),
-      body: new CreateEditWorkoutForm(),
+      body: new CreateEditWorkoutForm(
+        workoutName,
+        workDuration,
+        restDuration,
+        workSets,
+        onNameChange: _onNameChange,
+        onWorkDurationChange: _onWorkDurationChange,
+        onRestDurationChange: _onRestDurationChange,
+        onWorkSetsChange: _onWorkSetsChange,
+      ),
     );
   }
 }
 
-class CreateEditWorkoutForm extends StatefulWidget {
-  @override
-  _CreateEditWorkoutFormState createState() =>
-      new _CreateEditWorkoutFormState();
-}
+class CreateEditWorkoutForm extends StatelessWidget {
+  CreateEditWorkoutForm(
+    this.name,
+    this.workDuration,
+    this.restDuration,
+    this.workSets, {
+    Key key,
+    this.onNameChange,
+    this.onWorkDurationChange,
+    this.onRestDurationChange,
+    this.onWorkSetsChange,
+  });
 
-class _CreateEditWorkoutFormState extends State<CreateEditWorkoutForm> {
-  TimeDuration workDuration = new TimeDuration(
-    new Duration(
-      seconds: 30,
-    ),
-  );
-  TimeDuration restDuration = new TimeDuration(
-    new Duration(
-      seconds: 15,
-    ),
-  );
-  String workoutName = 'New Workout';
-  List<WorkSet> workSets = [];
+  final String name;
+  final TimeDuration workDuration;
+  final TimeDuration restDuration;
+  final List<WorkSet> workSets;
+  final Function onNameChange;
+  final Function onWorkDurationChange;
+  final Function onRestDurationChange;
+  final Function onWorkSetsChange;
 
   @override
   Widget build(BuildContext context) {
@@ -87,21 +145,21 @@ class _CreateEditWorkoutFormState extends State<CreateEditWorkoutForm> {
         children: <Widget>[
           new ListItem(
             title: 'Workout Name',
-            subTitle: workoutName,
+            subTitle: name,
             subTitleColour: Colors.grey,
             onTap: () async {
-              var newName = await Navigator.of(context).push(
+              final newName = await Navigator.of(context).push(
                     new MaterialPageRoute(
                       builder: (BuildContext context) => new EditTextPage(
                             title: 'Workout Name',
-                            initValue: workoutName,
+                            initValue: name,
                             hintText: 'Enter A Workout Name',
                           ),
                     ),
                   );
 
-              if (newName != null) {
-                workoutName = newName;
+              if (onNameChange != null) {
+                onNameChange(newName);
               }
             },
           ),
@@ -120,8 +178,8 @@ class _CreateEditWorkoutFormState extends State<CreateEditWorkoutForm> {
                     ),
                   );
 
-              if (newDuration != null) {
-                workDuration = newDuration;
+              if (onWorkDurationChange != null) {
+                onWorkDurationChange(newDuration);
               }
             },
           ),
@@ -140,8 +198,8 @@ class _CreateEditWorkoutFormState extends State<CreateEditWorkoutForm> {
                     ),
                   );
 
-              if (newDuration != null) {
-                restDuration = newDuration;
+              if (onRestDurationChange != null) {
+                onRestDurationChange(newDuration);
               }
             },
           ),
@@ -159,8 +217,8 @@ class _CreateEditWorkoutFormState extends State<CreateEditWorkoutForm> {
                     ),
                   );
 
-              if (newWorkSets != null) {
-                workSets = newWorkSets;
+              if (onWorkSetsChange != null) {
+                onWorkSetsChange(newWorkSets);
               }
             },
           ),
