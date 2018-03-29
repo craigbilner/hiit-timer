@@ -91,12 +91,14 @@ class _CreateEditWorkoutPageState extends State<CreateEditWorkoutPage> {
                 fontSize: 20.0,
               ),
             ),
-            onPressed: () => print(json.encode(new Workout(
-                  workoutName,
-                  workDuration,
-                  restDuration,
-                  workSets,
-                ))),
+            onPressed: () {
+              final asJson = json.encode(new Workout(
+                workoutName,
+                workDuration,
+                restDuration,
+                workSets,
+              ));
+            },
           ),
         ],
       ),

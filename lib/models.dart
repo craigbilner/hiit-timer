@@ -19,6 +19,24 @@ class Workout {
         'restDuration': json.encode(restDuration),
         'workSets': workSets.map((WorkSet ws) => json.encode(ws)).toList(),
       };
+
+  Workout.fromJson(Map<String, dynamic> m)
+      : name = m['name'],
+        workDuration = new TimeDuration.fromJson(
+          json.decode(
+            m['workDuration'],
+          ),
+        ),
+        restDuration = new TimeDuration.fromJson(
+          json.decode(
+            m['restDuration'],
+          ),
+        ),
+        workSets = m['workSets'].map(
+          (e) => new WorkSet.fromJson(
+                json.decode(e),
+              ),
+        ).toList();
 }
 
 class WorkSet {
@@ -34,6 +52,10 @@ class WorkSet {
         'name': name,
         'isComplete': isComplete,
       };
+
+  WorkSet.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        isComplete = json['isComplete'];
 }
 
 class TimeDuration {
@@ -89,4 +111,10 @@ class TimeDuration {
         'minutes': minutes.toString(),
         'seconds': seconds.toString(),
       };
+
+  TimeDuration.fromJson(Map<String, dynamic> json)
+      : duration = new Duration(
+          minutes: int.parse(json['minutes']),
+          seconds: int.parse(json['seconds']),
+        );
 }
