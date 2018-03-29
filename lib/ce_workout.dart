@@ -51,7 +51,11 @@ class _CreateEditWorkoutPageState extends State<CreateEditWorkoutPage> {
   Future<File> writeWorkout(Workout w) async {
     final file = await _localFile;
 
-    return file.writeAsString(w.toString());
+    return file.writeAsString(
+      json.encode(
+        w,
+      ),
+    );
   }
 
   _onNameChange(String newName) {
@@ -91,13 +95,15 @@ class _CreateEditWorkoutPageState extends State<CreateEditWorkoutPage> {
                 fontSize: 20.0,
               ),
             ),
-            onPressed: () {
-              final asJson = json.encode(new Workout(
+            onPressed: () async {
+              await writeWorkout(new Workout(
                 workoutName,
                 workDuration,
                 restDuration,
                 workSets,
               ));
+
+              Navigator.of(context).pop();
             },
           ),
         ],

@@ -8,12 +8,14 @@ class Workout {
     this.workSets,
   );
 
+  int id = new DateTime.now().millisecondsSinceEpoch;
   final String name;
   final TimeDuration workDuration;
   final TimeDuration restDuration;
   final List<WorkSet> workSets;
 
   Map<String, dynamic> toJson() => {
+        'id': id.toString(),
         'name': name,
         'workDuration': json.encode(workDuration),
         'restDuration': json.encode(restDuration),
@@ -21,7 +23,8 @@ class Workout {
       };
 
   Workout.fromJson(Map<String, dynamic> m)
-      : name = m['name'],
+      : id = int.parse(m['id']),
+        name = m['name'],
         workDuration = new TimeDuration.fromJson(
           json.decode(
             m['workDuration'],
