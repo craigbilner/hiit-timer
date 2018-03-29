@@ -1,5 +1,24 @@
 import 'dart:convert';
 
+class Workouts {
+  Workouts(this.workouts);
+
+  final List<Workout> workouts;
+
+  Map<String, dynamic> toJson() => {
+        'workouts': workouts.map((Workout w) => json.encode(w)).toList(),
+      };
+
+  Workouts.fromJson(Map<String, dynamic> m)
+      : workouts = m['workouts']
+            .map(
+              (e) => new Workout.fromJson(
+                    json.decode(e),
+                  ),
+            )
+            .toList();
+}
+
 class Workout {
   Workout(
     this.name,
@@ -35,11 +54,13 @@ class Workout {
             m['restDuration'],
           ),
         ),
-        workSets = m['workSets'].map(
-          (e) => new WorkSet.fromJson(
-                json.decode(e),
-              ),
-        ).toList();
+        workSets = m['workSets']
+            .map(
+              (e) => new WorkSet.fromJson(
+                    json.decode(e),
+                  ),
+            )
+            .toList();
 }
 
 class WorkSet {
