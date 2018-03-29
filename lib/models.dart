@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Workout {
   Workout(
     this.name,
@@ -10,6 +12,13 @@ class Workout {
   final TimeDuration workDuration;
   final TimeDuration restDuration;
   final List<WorkSet> workSets;
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'workDuration': json.encode(workDuration),
+        'restDuration': json.encode(restDuration),
+        'workSets': workSets.map((WorkSet ws) => json.encode(ws)).toList(),
+      };
 }
 
 class WorkSet {
@@ -20,6 +29,11 @@ class WorkSet {
 
   final String name;
   bool isComplete;
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'isComplete': isComplete,
+      };
 }
 
 class TimeDuration {
@@ -70,4 +84,9 @@ class TimeDuration {
       ),
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'minutes': minutes.toString(),
+        'seconds': seconds.toString(),
+      };
 }
