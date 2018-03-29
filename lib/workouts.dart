@@ -1,17 +1,42 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'models.dart';
+import 'read_write.dart';
 import 'in_play.dart';
 
-class WorkoutsPage extends StatelessWidget {
-  WorkoutsPage(
-    this.workouts, {
-    Key key,
-  }) : super(key: key);
+class WorkoutsPage extends StatefulWidget {
+  @override
+  _WorkoutsPageState createState() => new _WorkoutsPageState();
+}
 
-  final List<Workout> workouts;
+class _WorkoutsPageState extends State<WorkoutsPage> {
+  List<Workout> workouts = [];
+  bool isFetching = true;
+
+  @override
+  initState() {
+    super.initState();
+
+    readWorkouts().then((List<Workout> ws) {
+      setState(() {
+        isFetching = false;
+        workouts = ws;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    Widget body;
+
+    if (isFetching) {
+      body = new FetchingState();
+    } else if (workouts.length == 0) {
+      body = new EmptyState();
+    } else {
+      body = new WorkoutsList(workouts);
+    }
+
     return new Scaffold(
       appBar: new AppBar(
         title: new Center(
@@ -32,8 +57,7 @@ class WorkoutsPage extends StatelessWidget {
           Icons.add,
         ),
       ),
-      body:
-          workouts.length == 0 ? new EmptyState() : new WorkoutsList(workouts),
+      body: body,
     );
   }
 }
@@ -57,6 +81,45 @@ class EmptyState extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class FetchingState extends StatefulWidget {
+  @override
+  _FetchingStateState createState() => new _FetchingStateState();
+}
+
+class _FetchingStateState extends State<FetchingState> {
+  Timer countdown;
+  bool showLoader = false;
+
+  @override
+  initState() {
+    super.initState();
+
+    const timeout = const Duration(milliseconds: 200);
+
+    countdown = new Timer(timeout, () {
+      setState(() {
+        showLoader = true;
+      });
+    });
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+
+    countdown.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return showLoader
+        ? new Center(
+            child: new CircularProgressIndicator(),
+          )
+        : new Container();
   }
 }
 

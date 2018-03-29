@@ -25,7 +25,7 @@ Future<List<Workout>> readWorkouts() async {
     return new Workouts.fromJson(json.decode(contents)).workouts;
   } catch (e) {
     print('error: $e');
-    
+
     return [];
   }
 }
