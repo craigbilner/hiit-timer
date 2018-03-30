@@ -7,32 +7,78 @@ import 'ce_sets.dart';
 import 'models.dart';
 import 'read_write.dart';
 
-class CreateEditWorkoutPage extends StatefulWidget {
-  CreateEditWorkoutPage({
+enum WorkoutPageState { create, edit }
+
+class CreateWorkoutPage extends StatelessWidget {
+  CreateWorkoutPage({
     Key key,
-    this.actionName,
   });
 
-  final String actionName;
+  @override
+  Widget build(BuildContext context) {
+    return new _CreateEditWorkoutPage(
+      WorkoutPageState.create,
+    );
+  }
+}
+
+class EditWorkoutPage extends StatelessWidget {
+  EditWorkoutPage(
+    this.id, {
+    Key key,
+    this.workoutName,
+    this.workDuration,
+    this.restDuration,
+    this.workSets,
+  });
+
+  final int id;
+  final String workoutName;
+  final TimeDuration workDuration;
+  final TimeDuration restDuration;
+  final List<WorkSet> workSets;
+
+  @override
+  Widget build(BuildContext context) {
+    return new _CreateEditWorkoutPage(
+      WorkoutPageState.edit,
+      id: id,
+      workoutName: workoutName,
+      workDuration: workDuration,
+      restDuration: restDuration,
+      workSets: workSets,
+    );
+  }
+}
+
+class _CreateEditWorkoutPage extends StatefulWidget {
+  _CreateEditWorkoutPage(
+    this.pageState, {
+    Key key,
+    this.id,
+    this.workoutName,
+    this.workDuration,
+    this.restDuration,
+    this.workSets,
+  });
+
+  final int id;
+  final WorkoutPageState pageState;
+  final String workoutName;
+  final TimeDuration workDuration;
+  final TimeDuration restDuration;
+  final List<WorkSet> workSets;
 
   @override
   _CreateEditWorkoutPageState createState() =>
       new _CreateEditWorkoutPageState();
 }
 
-class _CreateEditWorkoutPageState extends State<CreateEditWorkoutPage> {
-  TimeDuration workDuration = new TimeDuration(
-    new Duration(
-      seconds: 30,
-    ),
-  );
-  TimeDuration restDuration = new TimeDuration(
-    new Duration(
-      seconds: 15,
-    ),
-  );
-  String workoutName = 'New Workout';
-  List<WorkSet> workSets = [];
+class _CreateEditWorkoutPageState extends State<_CreateEditWorkoutPage> {
+  String workoutName;
+  TimeDuration workDuration;
+  TimeDuration restDuration;
+  List<WorkSet> workSets;
 
   _onNameChange(String newName) {
     if (newName != null) {
@@ -59,19 +105,49 @@ class _CreateEditWorkoutPageState extends State<CreateEditWorkoutPage> {
   }
 
   @override
+  initState() {
+    super.initState();
+
+    final TimeDuration defaultDuration = new TimeDuration(
+      new Duration(
+        seconds: 15,
+      ),
+    );
+
+    workoutName =
+        widget.workoutName == null ? 'New Workout' : widget.workoutName;
+    workDuration =
+        widget.workDuration == null ? defaultDuration : widget.workDuration;
+    restDuration =
+        widget.restDuration == null ? defaultDuration : widget.restDuration;
+    workSets = widget.workSets == null ? [] : widget.workSets;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         actions: <Widget>[
           new ActionButton(
-            text: widget.actionName,
+            text:
+                widget.pageState == WorkoutPageState.create ? 'Create' : 'Save',
             onPressed: () async {
-              await writeWorkout(new Workout(
-                workoutName,
-                workDuration,
-                restDuration,
-                workSets,
-              ));
+              if (widget.pageState == WorkoutPageState.create) {
+                await addWorkout(new Workout(
+                  workoutName,
+                  workDuration,
+                  restDuration,
+                  workSets,
+                ));
+              } else {
+                await updateWorkout(
+                  widget.id,
+                  workoutName: workoutName,
+                  workDuration: workDuration,
+                  restDuration: restDuration,
+                  workSets: workSets,
+                );
+              }
 
               Navigator.of(context).pop();
             },

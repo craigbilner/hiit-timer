@@ -3,8 +3,16 @@ import 'dart:async';
 import 'models.dart';
 import 'read_write.dart';
 import 'in_play.dart';
+import 'ce_workout.dart';
 
 class WorkoutsPage extends StatefulWidget {
+  WorkoutsPage({
+    Key key,
+    this.isEditing: false,
+  });
+
+  final bool isEditing;
+
   @override
   _WorkoutsPageState createState() => new _WorkoutsPageState();
 }
@@ -38,14 +46,42 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
     } else if (workouts.length == 0) {
       body = new EmptyState();
     } else {
-      body = new WorkoutsList(workouts);
+      body = new WorkoutsList(
+        workouts,
+        isEditing: widget.isEditing,
+      );
     }
 
     return new Scaffold(
       appBar: new AppBar(
-        title: new Center(
-          child: new Text('Workouts'),
+        leading: new IconButton(
+          icon: widget.isEditing
+              ? new Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                )
+              : new Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                ),
+          color: Colors.white,
+          onPressed: () async {
+            if (widget.isEditing) {
+              Navigator.of(context).pop();
+            } else {
+              await Navigator.of(context).push(new PageRouteBuilder(
+                    pageBuilder: (BuildContext context, _, __) =>
+                        new WorkoutsPage(
+                          isEditing: true,
+                        ),
+                  ));
+
+              _refreshPage();
+            }
+          },
         ),
+        title: new Text('Workouts'),
+        centerTitle: true,
         actions: <Widget>[
           new IconButton(
             icon: new Icon(Icons.settings),
@@ -132,9 +168,14 @@ class _FetchingStateState extends State<FetchingState> {
 }
 
 class WorkoutsList extends StatelessWidget {
-  WorkoutsList(this.workouts, {Key key});
+  WorkoutsList(
+    this.workouts, {
+    Key key,
+    this.isEditing: false,
+  });
 
   final List<Workout> workouts;
+  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
@@ -150,21 +191,39 @@ class WorkoutsList extends StatelessWidget {
                     fontSize: 25.0,
                   ),
                 ),
-                trailing: new Icon(
-                  Icons.arrow_right,
-                  size: 50.0,
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                        new MaterialPageRoute(
-                          builder: (BuildContext bc) => new InPlayPage(
-                                title: w.name,
-                                workDuration: w.workDuration,
-                                restDuration: w.restDuration,
-                                workSets: w.workSets,
-                              ),
-                        ),
-                      );
+                trailing: isEditing
+                    ? new Icon(Icons.edit)
+                    : new Icon(
+                        Icons.arrow_right,
+                        size: 50.0,
+                      ),
+                onTap: () async {
+                  if (isEditing) {
+                    await Navigator.of(context).push(
+                          new MaterialPageRoute(
+                            builder: (BuildContext bc) => new EditWorkoutPage(
+                                  w.id,
+                                  workoutName: w.name,
+                                  workDuration: w.workDuration,
+                                  restDuration: w.restDuration,
+                                  workSets: w.workSets,
+                                ),
+                          ),
+                        );
+
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.of(context).push(
+                          new MaterialPageRoute(
+                            builder: (BuildContext bc) => new InPlayPage(
+                                  title: w.name,
+                                  workDuration: w.workDuration,
+                                  restDuration: w.restDuration,
+                                  workSets: w.workSets,
+                                ),
+                          ),
+                        );
+                  }
                 },
               ))
           .toList(),

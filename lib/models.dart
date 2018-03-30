@@ -28,10 +28,10 @@ class Workout {
   );
 
   int id = new DateTime.now().millisecondsSinceEpoch;
-  final String name;
-  final TimeDuration workDuration;
-  final TimeDuration restDuration;
-  final List<WorkSet> workSets;
+  String name;
+  TimeDuration workDuration;
+  TimeDuration restDuration;
+  List<WorkSet> workSets;
 
   Map<String, dynamic> toJson() => {
         'id': id.toString(),

@@ -15,9 +15,7 @@ class TimerApp extends StatelessWidget {
       ),
       home: new WorkoutsPage(),
       routes: <String, WidgetBuilder>{
-        '/create_workout': (BuildContext context) => new CreateEditWorkoutPage(
-              actionName: 'Create',
-            ),
+        '/create_workout': (BuildContext context) => new CreateWorkoutPage(),
         '/settings': (BuildContext context) => new SettingsPage(),
       },
     );
