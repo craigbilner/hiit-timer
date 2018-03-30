@@ -13,8 +13,7 @@ class CustomTimer extends StatefulWidget {
     this.colour: Colors.black,
     this.fontSize: 14.0,
     this.fontWeight,
-  })
-      : super(key: key);
+  }) : super(key: key);
 
   final TimeDuration initValue;
   final bool isFrozen;
@@ -43,6 +42,11 @@ class _CustomTimerState extends State<CustomTimer> {
   }
 
   void _decrementTime(Timer t) {
+    if (_curTimeInSecs == 0 && !_freezeOnNextTick) {
+      countDown.cancel();
+      return;
+    }
+
     setState(() {
       _curTimeInSecs--;
 
@@ -98,8 +102,7 @@ class _CustomTimerState extends State<CustomTimer> {
           new Duration(
             seconds: _curTimeInSecs,
           ),
-        )
-            .toString(),
+        ).toString(),
         style: new TextStyle(
           fontSize: widget.fontSize,
           color: widget.colour,
