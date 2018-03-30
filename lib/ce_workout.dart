@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'app_bar.dart';
 import 'edit_time.dart';
 import 'edit_text.dart';
 import 'ce_sets.dart';
@@ -62,14 +63,8 @@ class _CreateEditWorkoutPageState extends State<CreateEditWorkoutPage> {
     return new Scaffold(
       appBar: new AppBar(
         actions: <Widget>[
-          new MaterialButton(
-            child: new Text(
-              widget.actionName,
-              style: new TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
-              ),
-            ),
+          new ActionButton(
+            text: widget.actionName,
             onPressed: () async {
               await writeWorkout(new Workout(
                 workoutName,

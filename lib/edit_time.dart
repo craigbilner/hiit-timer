@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'models.dart';
+import 'app_bar.dart';
 
 typedef OnSelectedItemChanged(int indx);
 typedef OnChange(TimeDuration duration);
@@ -36,14 +37,8 @@ class _EditTimePageState extends State<EditTimePage> {
       appBar: new AppBar(
         title: new Text('Edit Time'),
         actions: <Widget>[
-          new MaterialButton(
-            child: new Text(
-              'Save',
-              style: new TextStyle(
-                color: Colors.white,
-                fontSize: 25.0,
-              ),
-            ),
+          new ActionButton(
+            text: 'Save',
             onPressed: () => Navigator.of(context).pop(duration),
           ),
         ],
@@ -179,8 +174,7 @@ class TimeUnitWheel extends StatelessWidget {
     this.initialItem: 0,
     this.colour,
     this.onSelectedItemChanged,
-  })
-      : _controller = new FixedExtentScrollController(
+  }) : _controller = new FixedExtentScrollController(
           initialItem: initialItem,
         );
 

@@ -126,7 +126,7 @@ class ListItem extends StatelessWidget {
     Key key,
     @required this.mainItem,
     @required this.title,
-    this.subTitle: '',
+    this.subTitle,
   })
       : super(key: key);
 
@@ -157,7 +157,7 @@ class ListItem extends StatelessWidget {
                   ),
                 ),
                 new Text(
-                  subTitle,
+                  subTitle == null ? '' : subTitle,
                   style: new TextStyle(
                     color: Colors.grey,
                     fontSize: labelSize,

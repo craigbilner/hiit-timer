@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'models.dart';
+import 'app_bar.dart';
 
 class CreateEditWorkSetsPage extends StatefulWidget {
   CreateEditWorkSetsPage({
@@ -37,14 +38,8 @@ class _CreateEditWorkSetsPageState extends State<CreateEditWorkSetsPage> {
     return new Scaffold(
       appBar: new AppBar(
         actions: <Widget>[
-          new MaterialButton(
-            child: new Text(
-              'Save',
-              style: new TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
-              ),
-            ),
+          new ActionButton(
+            text: 'Save',
             onPressed: () => Navigator.of(context).pop(
                   workSets,
                 ),
