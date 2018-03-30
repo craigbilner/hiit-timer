@@ -11,9 +11,11 @@ class WorkoutsPage extends StatefulWidget {
   WorkoutsPage({
     Key key,
     this.mode: WorkoutsPageMode.read,
+    this.selectedId,
   });
 
   final WorkoutsPageMode mode;
+  final int selectedId;
 
   @override
   _WorkoutsPageState createState() => new _WorkoutsPageState();
@@ -24,12 +26,51 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
   bool isFetching = true;
 
   _refreshPage() {
-    readWorkouts().then((List<Workout> ws) {
+    return readWorkouts().then((List<Workout> ws) {
       setState(() {
         isFetching = false;
         workouts = ws;
       });
     });
+  }
+
+  _onItemSelected(Workout w) async {
+    if (widget.mode == WorkoutsPageMode.edit) {
+      await Navigator.of(context).push(
+            new MaterialPageRoute(
+              builder: (BuildContext bc) => new EditWorkoutPage(
+                    w.id,
+                    workoutName: w.name,
+                    workDuration: w.workDuration,
+                    restDuration: w.restDuration,
+                    workSets: w.workSets,
+                  ),
+            ),
+          );
+
+      Navigator.of(context).pop();
+    } else if (widget.mode == WorkoutsPageMode.read) {
+      Navigator.of(context).push(
+            new MaterialPageRoute(
+              builder: (BuildContext bc) => new InPlayPage(
+                    title: w.name,
+                    workDuration: w.workDuration,
+                    restDuration: w.restDuration,
+                    workSets: w.workSets,
+                  ),
+            ),
+          );
+    }
+  }
+
+  _onItemLongPressed(Workout w) async {
+    await Navigator.of(context).push(new PageRouteBuilder(
+          pageBuilder: (BuildContext context, _, __) => new WorkoutsPage(
+                mode: WorkoutsPageMode.delete,
+              ),
+        ));
+
+    _refreshPage();
   }
 
   @override
@@ -42,7 +83,7 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
   @override
   Widget build(BuildContext context) {
     Widget body;
-    IconData icon;
+    Widget leading;
 
     if (isFetching) {
       body = new FetchingState();
@@ -52,40 +93,73 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
       body = new WorkoutsList(
         widget.mode,
         workouts,
+        _onItemSelected,
+        _onItemLongPressed,
+        selectedId: widget.selectedId,
       );
     }
 
-    if (widget.mode == WorkoutsPageMode.delete) {
-      icon = Icons.delete;
+    if (workouts.length == 0) {
+      leading = new Container();
+    } else if (widget.mode == WorkoutsPageMode.delete) {
+      leading = new GestureDetector(
+        child: new Row(
+          children: <Widget>[
+            new Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: new Icon(
+                Icons.delete,
+              ),
+            ),
+            new Text(
+              'All',
+              style: new TextStyle(
+                fontSize: 20.0,
+              ),
+            ),
+          ],
+        ),
+        onTap: () async {
+          await deleteWorkouts(workouts);
+
+          Navigator.of(context).pop();
+
+          _refreshPage();
+        },
+      );
     } else if (widget.mode == WorkoutsPageMode.edit) {
-      icon = Icons.arrow_back;
+      leading = new IconButton(
+        icon: new Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+        ),
+        color: Colors.white,
+        onPressed: () async {
+          Navigator.of(context).pop();
+        },
+      );
     } else {
-      icon = Icons.edit;
+      leading = new IconButton(
+        icon: new Icon(
+          Icons.edit,
+          color: Colors.white,
+        ),
+        color: Colors.white,
+        onPressed: () async {
+          await Navigator.of(context).push(new PageRouteBuilder(
+                pageBuilder: (BuildContext context, _, __) => new WorkoutsPage(
+                      mode: WorkoutsPageMode.edit,
+                    ),
+              ));
+
+          _refreshPage();
+        },
+      );
     }
 
     return new Scaffold(
       appBar: new AppBar(
-        leading: new IconButton(
-          icon: new Icon(
-            icon,
-            color: Colors.white,
-          ),
-          color: Colors.white,
-          onPressed: () async {
-            if (widget.mode == WorkoutsPageMode.edit) {
-              Navigator.of(context).pop();
-            } else if (widget.mode == WorkoutsPageMode.read) {
-              await Navigator.of(context).push(new PageRouteBuilder(
-                    pageBuilder: (BuildContext context, _, __) =>
-                        new WorkoutsPage(
-                          mode: WorkoutsPageMode.edit,
-                        ),
-                  ));
-
-              _refreshPage();
-            }
-          },
-        ),
+        leading: leading,
         title: new Text('Workouts'),
         centerTitle: true,
         actions: <Widget>[
@@ -176,12 +250,18 @@ class _FetchingStateState extends State<FetchingState> {
 class WorkoutsList extends StatelessWidget {
   WorkoutsList(
     this.mode,
-    this.workouts, {
+    this.workouts,
+    this.onTap,
+    this.onLongPress, {
     Key key,
+    this.selectedId,
   });
 
   final WorkoutsPageMode mode;
   final List<Workout> workouts;
+  final Function onTap;
+  final Function onLongPress;
+  final int selectedId;
 
   @override
   Widget build(BuildContext context) {
@@ -211,35 +291,8 @@ class WorkoutsList extends StatelessWidget {
                   ),
                 ),
                 trailing: trailingIcon,
-                onTap: () async {
-                  if (mode == WorkoutsPageMode.edit) {
-                    await Navigator.of(context).push(
-                          new MaterialPageRoute(
-                            builder: (BuildContext bc) => new EditWorkoutPage(
-                                  w.id,
-                                  workoutName: w.name,
-                                  workDuration: w.workDuration,
-                                  restDuration: w.restDuration,
-                                  workSets: w.workSets,
-                                ),
-                          ),
-                        );
-
-                    Navigator.of(context).pop();
-                  } else if (mode == WorkoutsPageMode.read) {
-                    Navigator.of(context).push(
-                          new MaterialPageRoute(
-                            builder: (BuildContext bc) => new InPlayPage(
-                                  title: w.name,
-                                  workDuration: w.workDuration,
-                                  restDuration: w.restDuration,
-                                  workSets: w.workSets,
-                                ),
-                          ),
-                        );
-                  }
-                },
-                onLongPress: () {},
+                onTap: () => onTap(w),
+                onLongPress: () => onLongPress(w),
               ))
           .toList(),
     );

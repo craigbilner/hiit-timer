@@ -99,3 +99,25 @@ Future<File> updateWorkout(
     ),
   );
 }
+
+Future<File> deleteWorkouts(List<Workout> ws) async {
+  List<Workout> existingWorkouts = await readWorkouts();
+
+  if (existingWorkouts != null && existingWorkouts.length > 0) {
+    final List<int> toDelete = ws.map((w) => w.id).toList();
+
+    existingWorkouts.removeWhere((w) {
+      return toDelete.contains(w.id);
+    });
+  }
+
+  final file = await _localFile;
+
+  return file.writeAsString(
+    json.encode(
+      new Workouts(
+        existingWorkouts,
+      ),
+    ),
+  );
+}
