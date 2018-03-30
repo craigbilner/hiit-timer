@@ -13,16 +13,20 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
   List<Workout> workouts = [];
   bool isFetching = true;
 
-  @override
-  initState() {
-    super.initState();
-
+  _refreshPage() {
     readWorkouts().then((List<Workout> ws) {
       setState(() {
         isFetching = false;
         workouts = ws;
       });
     });
+  }
+
+  @override
+  initState() {
+    super.initState();
+
+    _refreshPage();
   }
 
   @override
@@ -52,7 +56,11 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
         ],
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamed('/create_workout'),
+        onPressed: () async {
+          await Navigator.of(context).pushNamed('/create_workout');
+
+          _refreshPage();
+        },
         child: new Icon(
           Icons.add,
         ),
