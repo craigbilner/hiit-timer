@@ -5,13 +5,15 @@ import 'read_write.dart';
 import 'in_play.dart';
 import 'ce_workout.dart';
 
+enum WorkoutsPageMode { read, edit, delete }
+
 class WorkoutsPage extends StatefulWidget {
   WorkoutsPage({
     Key key,
-    this.isEditing: false,
+    this.mode: WorkoutsPageMode.read,
   });
 
-  final bool isEditing;
+  final WorkoutsPageMode mode;
 
   @override
   _WorkoutsPageState createState() => new _WorkoutsPageState();
@@ -40,6 +42,7 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
   @override
   Widget build(BuildContext context) {
     Widget body;
+    IconData icon;
 
     if (isFetching) {
       body = new FetchingState();
@@ -47,32 +50,35 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
       body = new EmptyState();
     } else {
       body = new WorkoutsList(
+        widget.mode,
         workouts,
-        isEditing: widget.isEditing,
       );
+    }
+
+    if (widget.mode == WorkoutsPageMode.delete) {
+      icon = Icons.delete;
+    } else if (widget.mode == WorkoutsPageMode.edit) {
+      icon = Icons.arrow_back;
+    } else {
+      icon = Icons.edit;
     }
 
     return new Scaffold(
       appBar: new AppBar(
         leading: new IconButton(
-          icon: widget.isEditing
-              ? new Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                )
-              : new Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                ),
+          icon: new Icon(
+            icon,
+            color: Colors.white,
+          ),
           color: Colors.white,
           onPressed: () async {
-            if (widget.isEditing) {
+            if (widget.mode == WorkoutsPageMode.edit) {
               Navigator.of(context).pop();
-            } else {
+            } else if (widget.mode == WorkoutsPageMode.read) {
               await Navigator.of(context).push(new PageRouteBuilder(
                     pageBuilder: (BuildContext context, _, __) =>
                         new WorkoutsPage(
-                          isEditing: true,
+                          mode: WorkoutsPageMode.edit,
                         ),
                   ));
 
@@ -169,16 +175,29 @@ class _FetchingStateState extends State<FetchingState> {
 
 class WorkoutsList extends StatelessWidget {
   WorkoutsList(
+    this.mode,
     this.workouts, {
     Key key,
-    this.isEditing: false,
   });
 
+  final WorkoutsPageMode mode;
   final List<Workout> workouts;
-  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
+    Icon trailingIcon;
+
+    if (mode == WorkoutsPageMode.delete) {
+      trailingIcon = new Icon(Icons.delete);
+    } else if (mode == WorkoutsPageMode.edit) {
+      trailingIcon = new Icon(Icons.edit);
+    } else {
+      trailingIcon = new Icon(
+        Icons.arrow_right,
+        size: 50.0,
+      );
+    }
+
     return new ListView(
       padding: const EdgeInsets.symmetric(
         vertical: 16.0,
@@ -191,14 +210,9 @@ class WorkoutsList extends StatelessWidget {
                     fontSize: 25.0,
                   ),
                 ),
-                trailing: isEditing
-                    ? new Icon(Icons.edit)
-                    : new Icon(
-                        Icons.arrow_right,
-                        size: 50.0,
-                      ),
+                trailing: trailingIcon,
                 onTap: () async {
-                  if (isEditing) {
+                  if (mode == WorkoutsPageMode.edit) {
                     await Navigator.of(context).push(
                           new MaterialPageRoute(
                             builder: (BuildContext bc) => new EditWorkoutPage(
@@ -212,7 +226,7 @@ class WorkoutsList extends StatelessWidget {
                         );
 
                     Navigator.of(context).pop();
-                  } else {
+                  } else if (mode == WorkoutsPageMode.read) {
                     Navigator.of(context).push(
                           new MaterialPageRoute(
                             builder: (BuildContext bc) => new InPlayPage(
@@ -225,6 +239,7 @@ class WorkoutsList extends StatelessWidget {
                         );
                   }
                 },
+                onLongPress: () {},
               ))
           .toList(),
     );

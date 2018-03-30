@@ -7,7 +7,7 @@ import 'ce_sets.dart';
 import 'models.dart';
 import 'read_write.dart';
 
-enum WorkoutPageState { create, edit }
+enum _PageMode { create, edit }
 
 class CreateWorkoutPage extends StatelessWidget {
   CreateWorkoutPage({
@@ -17,7 +17,7 @@ class CreateWorkoutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new _CreateEditWorkoutPage(
-      WorkoutPageState.create,
+      _PageMode.create,
     );
   }
 }
@@ -41,7 +41,7 @@ class EditWorkoutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new _CreateEditWorkoutPage(
-      WorkoutPageState.edit,
+      _PageMode.edit,
       id: id,
       workoutName: workoutName,
       workDuration: workDuration,
@@ -63,7 +63,7 @@ class _CreateEditWorkoutPage extends StatefulWidget {
   });
 
   final int id;
-  final WorkoutPageState pageState;
+  final _PageMode pageState;
   final String workoutName;
   final TimeDuration workDuration;
   final TimeDuration restDuration;
@@ -130,9 +130,9 @@ class _CreateEditWorkoutPageState extends State<_CreateEditWorkoutPage> {
         actions: <Widget>[
           new ActionButton(
             text:
-                widget.pageState == WorkoutPageState.create ? 'Create' : 'Save',
+                widget.pageState == _PageMode.create ? 'Create' : 'Save',
             onPressed: () async {
-              if (widget.pageState == WorkoutPageState.create) {
+              if (widget.pageState == _PageMode.create) {
                 await addWorkout(new Workout(
                   workoutName,
                   workDuration,
