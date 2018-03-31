@@ -77,7 +77,7 @@ class _InPlayPageState extends State<InPlayPage> {
   initState() {
     super.initState();
 
-    currentSets = new List.from(widget.workSets);
+    currentSets = widget.workSets.map((w) => w.clone()).toList();
   }
 
   @override

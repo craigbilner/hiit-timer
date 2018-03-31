@@ -72,6 +72,13 @@ class WorkSet {
   final String name;
   bool isComplete;
 
+  WorkSet clone() {
+    return new WorkSet(
+      name,
+      isComplete: isComplete,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
         'name': name,
         'isComplete': isComplete,
