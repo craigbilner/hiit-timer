@@ -4,6 +4,7 @@ import 'models.dart';
 import 'read_write.dart';
 import 'in_play.dart';
 import 'ce_workout.dart';
+import 'app_bar.dart';
 
 enum WorkoutsPageMode { read, edit, delete }
 
@@ -23,6 +24,7 @@ class WorkoutsPage extends StatefulWidget {
 
 class _WorkoutsPageState extends State<WorkoutsPage> {
   List<Workout> workouts = [];
+  List<int> selectedIds = [];
   bool isFetching = true;
 
   _refreshPage() {
@@ -67,15 +69,33 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
     await Navigator.of(context).push(new PageRouteBuilder(
           pageBuilder: (BuildContext context, _, __) => new WorkoutsPage(
                 mode: WorkoutsPageMode.delete,
+                selectedId: w.id,
               ),
         ));
 
     _refreshPage();
   }
 
+  _onItemSelectionChange({
+    Workout workout,
+    bool isSelected,
+  }) {
+    setState(() {
+      if (!isSelected) {
+        selectedIds.removeWhere((int id) => id == workout.id);
+      } else {
+        selectedIds.add(workout.id);
+      }
+    });
+  }
+
   @override
   initState() {
     super.initState();
+
+    if (widget.selectedId != null) {
+      selectedIds.add(widget.selectedId);
+    }
 
     _refreshPage();
   }
@@ -84,6 +104,7 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
   Widget build(BuildContext context) {
     Widget body;
     Widget leading;
+    List<Widget> actions;
 
     if (isFetching) {
       body = new FetchingState();
@@ -95,7 +116,8 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
         workouts,
         _onItemSelected,
         _onItemLongPressed,
-        selectedId: widget.selectedId,
+        selectedIds: selectedIds,
+        onItemSelectionChange: _onItemSelectionChange,
       );
     }
 
@@ -120,11 +142,9 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
           ],
         ),
         onTap: () async {
-          await deleteWorkouts(workouts);
-
-          Navigator.of(context).pop();
-
-          _refreshPage();
+          setState(() {
+            selectedIds = workouts.map((w) => w.id).toList();
+          });
         },
       );
     } else if (widget.mode == WorkoutsPageMode.edit) {
@@ -157,19 +177,36 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
       );
     }
 
+    if (widget.mode == WorkoutsPageMode.read) {
+      actions = [
+        new IconButton(
+          icon: new Icon(Icons.settings),
+          onPressed: () {
+            Navigator.of(context).pushNamed('/settings');
+          },
+        )
+      ];
+    } else if (widget.mode == WorkoutsPageMode.delete) {
+      actions = [
+        new ActionButton(
+          text: 'Delete',
+          onPressed: () async {
+            await deleteWorkouts(selectedIds);
+
+            Navigator.of(context).pop();
+
+            _refreshPage();
+          },
+        )
+      ];
+    }
+
     return new Scaffold(
       appBar: new AppBar(
         leading: leading,
         title: new Text('Workouts'),
         centerTitle: true,
-        actions: <Widget>[
-          new IconButton(
-            icon: new Icon(Icons.settings),
-            onPressed: () {
-              Navigator.of(context).pushNamed('/settings');
-            },
-          )
-        ],
+        actions: actions,
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: () async {
@@ -254,30 +291,42 @@ class WorkoutsList extends StatelessWidget {
     this.onTap,
     this.onLongPress, {
     Key key,
-    this.selectedId,
+    this.selectedIds,
+    this.onItemSelectionChange,
   });
 
   final WorkoutsPageMode mode;
   final List<Workout> workouts;
   final Function onTap;
   final Function onLongPress;
-  final int selectedId;
+  final List<int> selectedIds;
+  final Function onItemSelectionChange;
 
-  @override
-  Widget build(BuildContext context) {
-    Icon trailingIcon;
-
+  _trailing(Workout w) {
     if (mode == WorkoutsPageMode.delete) {
-      trailingIcon = new Icon(Icons.delete);
+      return new Checkbox(
+        value: selectedIds.contains(w.id),
+        onChanged: (bool isSelected) {
+          if (onItemSelectionChange != null) {
+            onItemSelectionChange(
+              workout: w,
+              isSelected: isSelected,
+            );
+          }
+        },
+      );
     } else if (mode == WorkoutsPageMode.edit) {
-      trailingIcon = new Icon(Icons.edit);
+      return new Icon(Icons.edit);
     } else {
-      trailingIcon = new Icon(
+      return new Icon(
         Icons.arrow_right,
         size: 50.0,
       );
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return new ListView(
       padding: const EdgeInsets.symmetric(
         vertical: 16.0,
@@ -290,7 +339,7 @@ class WorkoutsList extends StatelessWidget {
                     fontSize: 25.0,
                   ),
                 ),
-                trailing: trailingIcon,
+                trailing: _trailing(w),
                 onTap: () => onTap(w),
                 onLongPress: () => onLongPress(w),
               ))
